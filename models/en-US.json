@@ -1,0 +1,34 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "my mercedes",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "GetFuelLevelIntent",
+          "samples": [
+            "give me the gas level",
+            "give me the fuel level",
+            "do I need to get fuel",
+            "do I need to get gas",
+            "how much gas do I have",
+            "how much fuel do I have",
+            "what is the gas level",
+            "what is the fuel level"
+          ]
+        }
+      ]
+    }
+  }
+}

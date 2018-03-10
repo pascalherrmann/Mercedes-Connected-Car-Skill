@@ -1,0 +1,20 @@
+{
+  "name": "mercedes-connected-car-skill",
+  "version": "1.0.0",
+  "description": "My weekend task for MBRDNA!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "alexa",
+    "connected",
+    "car",
+    "mercedes"
+  ],
+  "author": "pascal.herrmann@me.com",
+  "license": "ISC",
+  "dependencies": {
+    "alexa-sdk": "^1.0.25"
+  }
+}

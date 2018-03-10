@@ -1,8 +1,7 @@
 'use strict';
 
 // Internal imports
-const MercedesClient = require('./MercedesClient');
-const MercedesClientOld = require('./MercedesClientOld');
+const MercedesClient = require('./MercedesClientSimple');
 const Intents = require('./Intents');
 const Events = require('./Events');
 const Messages = require('./Messages');
@@ -14,9 +13,18 @@ const Messages = require('./Messages');
 const getFuelLevelHandler = function () {
     console.info("Starting getFuelLevelHandler()");
 
-    const speechOutput = "Soon you will be able to ask for the fuel level of your Mercedes-Benz!";
-    this.response.speak(speechOutput);
-    this.emit(':responseReady');
+    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
+    const self = this;
+    client.getFuel(function(error, response) {
+        if (!error && response.fuellevelpercent.value != null) {
+            var speechOutput = "There are " + response.fuellevelpercent.value + " liters of fuel in your Mercedes!";
+            self.response.speak(speechOutput);
+        } else {
+            const speechOutput = "Unfortunately, there was a problem checking the fuel level!";
+            self.response.speak(speechOutput);
+        }
+        self.emit(':responseReady');
+    });
 
     console.info("Ending getFuelLevelHandler()");
 }
@@ -24,24 +32,23 @@ const getFuelLevelHandler = function () {
 const getLicensePlateHandler = function () {
     console.info("Starting getLicensePlateHandler()");
 
-    const self = this
-    const token = self.event.session.user.accessToken;
+        const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
+    const self = this;
+    client.getCars(function(error, response) {
+        if (!error && response != null) {
+            self.response.speak("Your Mercedes-Benz License Plate is " + response[0].licenseplate);
 
-    MercedesClientOld.getCars(token, function (error, result) {
-
-        if (error == null && result != null) {
-            self.response.speak("Your Mercedes-Benz License Plate is " + result[0].licenseplate);
+            self.emit(':responseReady');
         } else {
-            self.response.speak("Sorry, I could not find your cars!");
+            const speechOutput = "Unfortunately, I could not connect to your car!";
+            self.response.speak(speechOutput);
         }
 
         self.emit(':responseReady');
-
     });
 
     console.info("Ending getLicensePlateHandler()");
 }
-
 
 /*
     All Handlers for Amazon Built In Events and Intents
@@ -49,6 +56,14 @@ const getLicensePlateHandler = function () {
 
 const newSessionRequestHandler = function () {
     console.info("Starting newSessionRequestHandler()");
+
+    if (this.response.sessionAttributes != null) {
+        this.response.sessionAttributes.count++;
+    } else {
+        this.response.sessionAttributes = {
+            'count': 1
+        }
+    }
 
     if (this.event.request.type === Events.LAUNCH_REQUEST) {
         this.emit(Events.LAUNCH_REQUEST);
@@ -60,6 +75,9 @@ const newSessionRequestHandler = function () {
 };
 
 const launchRequestHandler = function () {
+    this.response.sessionAttributes = {
+        "jo": "jo"
+    };
     console.info("Starting launchRequestHandler()");
     this.emit(":ask", Messages.WELCOME + Messages.WHAT_DO_YOU_WANT, Messages.WHAT_DO_YOU_WANT);
     console.info("Ending launchRequestHandler()");
@@ -104,10 +122,6 @@ const amazonStopHandler = function () {
     //this.response.speak(STOP_MESSAGE);
     //this.emit(':responseReady');
 };
-
-
-
-
 
 const handlers = {};
 // Add event handlers

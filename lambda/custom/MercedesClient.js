@@ -1,6 +1,7 @@
 'use strict';
 
 const RestHelper = require('./rest-helper');
+const Helpers = require('./Helpers');
 const https = require("https");
 
 class MercedesClient {
@@ -13,36 +14,28 @@ class MercedesClient {
         this.port = 443;
     }
 
-
     getCars() {
         const options = this.__getRequestOptions(
             `/experimental/connectedvehicle/v1/vehicles`);
 
         return new Promise((fulfill, reject) => {
-            this.__handleDeviceAddressApiRequest(options, fulfill, reject);
+            this.__handleSimpleRequest(options, fulfill, reject);
         });
     }
 
+    getLocation() {
+        const path = `https://api.mercedes-benz.com/experimental/connectedvehicle/v1/vehicles/{0}/odometer`;
 
-    __handleDeviceAddressApiRequest(requestOptions, fulfill, reject) {
-        console.log("JO");
-        https.get(requestOptions, (response) => {
-            //console.log(`Device Address API responded with a status code of : ${response.statusCode}`);
+        return new Promise((fulfill, reject) => {
+            this.__handleVehicleRequest(path, fulfill, reject);
+        });
+    }
 
-            response.on('data', (data) => {
-                let responsePayloadObject = JSON.parse(data);
+    getFuel() {
+        const path = `https://api.mercedes-benz.com/experimental/connectedvehicle/v1/vehicles/{0}/fuel`;
 
-                const deviceAddressResponse = {
-                    statusCode: response.statusCode,
-                    address: responsePayloadObject
-                };
-
-                fulfill(deviceAddressResponse);
-            });
-        }).on('error', (e) => {
-            console.log("oops");
-            console.error(e);
-            reject();
+        return new Promise((fulfill, reject) => {
+            this.__handleVehicleRequest(path, fulfill, reject);
         });
     }
 
@@ -56,28 +49,102 @@ class MercedesClient {
                 'Authorization': 'Bearer ' + this.consentToken
             }
         };
+    };
+
+    // adds vehicle ID to simple request
+    __handleVehicleRequest(path, fulfill, reject) {
+
+        let carInfos = this.getCarsInfosConvencience();
+        carInfos.then((id) => {
+            console.log(id);
+            const requestOptions = this.__getRequestOptions(path.format(id))
+            this.__handleSimpleRequest(requestOptions, fulfill, reject);
+
+        }).catch(function (e) {
+            reject(e)
+        });
+
+    }
+
+    __handleSimpleRequest(requestOptions, fulfill, reject) {
+        https.get(requestOptions, (response) => {
+            //console.log(`Device Address API responded with a status code of : ${response.statusCode}`);
+
+            response.on('data', (data) => {
+                let responsePayloadObject = JSON.parse(data);
+
+                const r = {
+                    statusCode: response.statusCode,
+                    data: responsePayloadObject
+                };
+
+                fulfill(r);
+            });
+        }).on('error', (e) => {
+            console.error(e);
+            reject(e);
+        });
+    }
+
+    getCarsInfosConvencience() {
+
+        return new Promise((fulfill, reject) => {
+
+            let carInfos = this.getCars();
+
+            carInfos.then((carResponse) => {
+
+                switch (carResponse.statusCode) {
+                    case 200:
+
+                        if (carResponse.data.length > 0) {
+                            fulfill(carResponse.data[0].id);
+                        } else {
+                            fulfill(null);
+                        }
+
+                        break;
+                    default:
+                        reject(carResponse)
+                }
+
+            }).catch(function (e) {
+                reject(e)
+            });
+
+        });
+
     }
 
 }
 
-var client = new MercedesClient("1f396e57-51de-4126-bd18-c7f894770535");
+/*
+var client = new MercedesClient("d9fd1f68-93db-4521-9381-ef9dd55329b7");
 
-let deviceAddressRequest = client.getCars();
-
-deviceAddressRequest.then((carResponse) => {
-
-    switch (carResponse.statusCode) {
-        case 200:
-            console.log("Perfect!");
-            break;
-        case 204:
-            console.log("Successfully requested from the device address API, but no address was returned.");
-            break;
-        default:
-            console.log("Error: Status-Code=" + carResponse.statusCode);
-    }
-
-}).catch(function(e) {
-    console.log(e);
-    console.log("Something went wrong!");
+let carInfos = client.getCarsInfosConvencience();
+carInfos.then((id) => {
+    console.log(id)
+}).catch(function (e) {
+    console.log("Error")
+    console.log(e)
 });
+
+
+let locationInfo = client.getLocation();
+locationInfo.then((id) => {
+    console.log(id)
+}).catch(function (e) {
+    console.log("Error")
+    console.log(e)
+});
+
+let fuelInfo = client.getFuel();
+fuelInfo.then((id) => {
+    console.log(id)
+}).catch(function (e) {
+    console.log("Error")
+    console.log(e)
+});
+*/
+
+module.exports.MercedesClient = MercedesClient;

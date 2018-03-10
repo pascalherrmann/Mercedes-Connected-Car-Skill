@@ -1,5 +1,8 @@
 'use strict';
+
 const Alexa = require('alexa-sdk');
+const RestHelper = require('rest-helper');
+
 
 const APP_ID = undefined;
 
@@ -24,6 +27,24 @@ const handlers = {
         this.response.speak(speechOutput);
         this.emit(':responseReady');
     },
+    'GetLicensePlateIntent': function () {
+
+        const self = this
+        const token = self.event.session.user.accessToken;
+        
+        getCars(token, function (error, result) {
+
+            if (error == null && result != null) {
+                self.response.speak("Your License Plate ist " + result[0].licenseplate);
+            } else {
+                self.response.speak("Sorry, I could not find your cars!");
+            }
+            
+            self.emit(':responseReady');
+            
+        });
+
+    },
     'AMAZON.HelpIntent': function () {
         const speechOutput = HELP_MESSAGE;
         const reprompt = HELP_REPROMPT;
@@ -40,3 +61,29 @@ const handlers = {
         this.emit(':responseReady');
     },
 };
+
+
+function getCars(token, callback) {
+
+    var options = {
+        host: 'api.mercedes-benz.com',
+        port: 443,
+        path: '/experimental/connectedvehicle/v1/vehicles',
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        }
+    };
+
+    RestHelper.getJSON(options, function (statusCode, result) {
+
+        if (statusCode == 200 && result != null) {
+            callback(null, result);
+        } else {
+            callback(statusCode, result);
+        }
+
+    })
+
+}

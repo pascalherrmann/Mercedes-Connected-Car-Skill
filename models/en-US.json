@@ -1,23 +1,23 @@
 {
-  "interactionModel": {
-    "languageModel": {
-      "invocationName": "my mercedes",
-      "intents": [
-        {
-          "name": "AMAZON.CancelIntent",
-          "samples": []
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "my mercedes",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
         },
-        {
-          "name": "AMAZON.HelpIntent",
-          "samples": []
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
         },
-        {
-          "name": "AMAZON.StopIntent",
-          "samples": []
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
         },
-        {
-          "name": "GetFuelLevelIntent",
-          "samples": [
+                {
+                    "name": "GetFuelLevelIntent",
+                    "samples": [
             "give me the gas level",
             "give me the fuel level",
             "do I need to get fuel",
@@ -27,8 +27,20 @@
             "what is the gas level",
             "what is the fuel level"
           ]
+        },
+                {
+                    "name": "GetLicensePlateIntent",
+                    "samples": [
+            "what is my car's license plate",
+            "what's my car's license plate",
+            "what is my license plate",
+            "what license plate do I have",
+            "tell me my license plate",
+            "tell me my car's license plate",
+            "which license plate do i have"
+          ]
         }
       ]
+        }
     }
-  }
 }

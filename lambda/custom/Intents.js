@@ -8,6 +8,7 @@
 // Custom Intents
 const GET_FUEL_LEVEL = "GetFuelLevelIntent";
 const GET_LICENSE_PLATE = "GetLicensePlateIntent";
+const GET_MILES = "GetMilesIntent";
 
 // Amazon built-in intents.
 const AMAZON_HELP = "AMAZON.HelpIntent";
@@ -17,6 +18,7 @@ const AMAZON_STOP = "AMAZON.StopIntent";
 module.exports = {
     "GET_FUEL_LEVEL": GET_FUEL_LEVEL,
     "GET_LICENSE_PLATE": GET_LICENSE_PLATE,
+    "GET_MILES": GET_MILES,
     "AMAZON_HELP": AMAZON_HELP,
     "AMAZON_CANCEL": AMAZON_CANCEL,
     "AMAZON_STOP": AMAZON_STOP

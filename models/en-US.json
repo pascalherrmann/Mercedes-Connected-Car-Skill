@@ -39,6 +39,21 @@
             "tell me my car's license plate",
             "which license plate do i have"
           ]
+        },
+                {
+                    "name": "GetMilesIntent",
+                    "samples": [
+            "what is my car's mileage",
+            "what is my Mercedes's mileage",
+            "how many mile have I been driven so far",
+            "what is the value of the odometer",
+            "what is the odometer value",
+            "how many miles does my car have",
+            "how many miles do I have",
+            "how many miles do I have",
+            "what does the odometer say",
+            "can you give me the odometer value"
+          ]
         }
       ]
         }

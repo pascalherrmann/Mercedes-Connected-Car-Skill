@@ -68,6 +68,10 @@ class MercedesClient {
     __getCallWithVehicleID(path, callback) {
         var self = this;
         this.getCars(function (error, result) {
+            if (error || result == 0) {
+                callback(error, result);
+                return;
+            }
             const carID = result[0].id;
             console.log(carID);
             const replacedPath = path.format(carID);

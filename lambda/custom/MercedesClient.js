@@ -118,33 +118,4 @@ class MercedesClient {
 
 }
 
-/*
-var client = new MercedesClient("d9fd1f68-93db-4521-9381-ef9dd55329b7");
-
-let carInfos = client.getCarsInfosConvencience();
-carInfos.then((id) => {
-    console.log(id)
-}).catch(function (e) {
-    console.log("Error")
-    console.log(e)
-});
-
-
-let locationInfo = client.getLocation();
-locationInfo.then((id) => {
-    console.log(id)
-}).catch(function (e) {
-    console.log("Error")
-    console.log(e)
-});
-
-let fuelInfo = client.getFuel();
-fuelInfo.then((id) => {
-    console.log(id)
-}).catch(function (e) {
-    console.log("Error")
-    console.log(e)
-});
-*/
-
 module.exports.MercedesClient = MercedesClient;

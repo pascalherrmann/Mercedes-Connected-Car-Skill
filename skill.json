@@ -1,23 +1,74 @@
 {
-    "manifest": {
-        "publishingInformation": {
-            "locales": {
-                "en-US": {
-                    "name": "MyMercedes"
-                },
-                "de-DE": {
-                    "name": "MeinMercedes"
-                }
-            }
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "de-DE": {
+          "summary": "Mercedes Connected Car Integration für Alexa",
+          "examplePhrases": [
+            "Alexa, frage Mein Mercedes wie viel Benzin im Auto ist!",
+            "Alexa, frage Mein Mercedes was mein Nummernschild ist!",
+            "Alexa, sage Mein Mercedes schließe das Auto ab!"
+          ],
+          "keywords": [
+            "Connected",
+            "Car",
+            "Mercedes",
+            "Alexa"
+          ],
+          "name": "MeinMercedes",
+          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/33be/1ec429a7157a4532a543ea68ceb7339f/APP_ICON?versionId=OqiyRz0GcYa5ZP6SMAojHcsl4198Nd2w&AWSAccessKeyId=AKIAI3X6PUXD7CU5F5BQ&Expires=1520858259&Signature=MgLWAShpivzklXka0z5HgLDVemA%3D",
+          "description": "Mercedes Connected Car Integration für Alexa",
+          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/e444/a781b518ac344a4790575191be501156/APP_ICON_LARGE?versionId=418VJaJzNBAHFbjORykh.eYxTfoD.WiY&AWSAccessKeyId=AKIAI3X6PUXD7CU5F5BQ&Expires=1520858259&Signature=kbR7Iwe1apZPcXZ3K5Co%2F6xpyh4%3D"
         },
-        "apis": {
-            "custom": {
-                "endpoint": {
-                    "sourceDir": "lambda/custom"
-                },
-                "interfaces": []
-            }
+        "en-US": {
+          "summary": "Mercedes Connected Car Integration for Alexa",
+          "examplePhrases": [
+            "Alexa ask My Mercedes what the fuel level is!",
+            "Alexa, ask My Mercedes what the mileage is!",
+            "Alexa, ask My Mercedes to lock the car!"
+          ],
+          "keywords": [
+            "Mercedes",
+            "Connected",
+            "Car",
+            "Alexa"
+          ],
+          "name": "MyMercedes",
+          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/1876/9d8d7b9628c142239d8d17bc1c8ca961/APP_ICON?versionId=ThK.sV4gCaeufWrTjl.L72i3yeIbPec1&AWSAccessKeyId=AKIAI3X6PUXD7CU5F5BQ&Expires=1520858259&Signature=hnb2G%2FGzT2jj88vpxoXkUoVwg64%3D",
+          "description": "This skill lets you interact with your Mercedes!",
+          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/bf46/6d4e835931e54d2ea44a83b4c11fcc32/APP_ICON_LARGE?versionId=u8m8Xi0nOEPOc.e1CkIAOfXyKX823wBk&AWSAccessKeyId=AKIAI3X6PUXD7CU5F5BQ&Expires=1520858259&Signature=Qf9b7EIFjtGlmkWkv983w%2BbVfgI%3D"
+        }
+      },
+      "isAvailableWorldwide": true,
+      "testingInstructions": "This Alexa skill is the result of my MBRDNA-weekend-challenge!\n\nTo test this skill, please make sure to link it with your Mercedes-Account (https://developer.mercedes-benz.com).\n\nNext, open the Car Simulator ( https://car-simulator.developer.mercedes-benz.com) in your browser - and you're ready to test! \n\nHave fun!",
+      "category": "CONNECTED_CAR",
+      "distributionCountries": []
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "sourceDir": "lambda/custom"
         },
-        "manifestVersion": "1.0"
+        "interfaces": []
+      }
+    },
+    "manifestVersion": "1.0",
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "locales": {
+        "de-DE": {
+          "termsOfUseUrl": "http://www.mercedes-benz.com",
+          "privacyPolicyUrl": "http://www.mercedes-benz.com"
+        },
+        "en-US": {
+          "termsOfUseUrl": "http://www.mercedes-benz.com",
+          "privacyPolicyUrl": "http://www.mercedes-benz.com"
+        }
+      },
+      "isExportCompliant": true,
+      "containsAds": false,
+      "isChildDirected": false,
+      "usesPersonalInfo": false
     }
+  }
 }

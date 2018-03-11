@@ -15,6 +15,7 @@
   "author": "pascal.herrmann@me.com",
   "license": "ISC",
   "dependencies": {
-    "alexa-sdk": "^1.0.25"
+    "alexa-sdk": "^1.0.25",
+    "@google/maps": "0.4.5"
   }
 }

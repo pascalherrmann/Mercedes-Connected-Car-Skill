@@ -2,6 +2,7 @@
 
 // Internal imports
 const MercedesClient = require('./MercedesClientSimple');
+const GoogleMapsClient = require('./GoogleMapsClient');
 const Intents = require('./Intents');
 const Events = require('./Events');
 const Messages = require('./Messages');
@@ -90,12 +91,22 @@ const getLocationHandler = function () {
     client.getLocation(function (error, response) {
         var speechOutput = "";
         if (!error && response != null) {
-            speechOutput = "Your Position is: Longitude=" + response.longitude.value + ", Latitude=" + response.latitude.value + "!";
+
+            GoogleMapsClient.getAddress(response.latitude.value, response.longitude.value, function (city) {
+                if (city) {
+                    speechOutput = "The car's position is: " + city;
+                } else {
+                    speechOutput = "The car's position is: Longitude=" + response.latitude.value + ", Latitude=" + response.longitude.value, + "!";
+                }
+                self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
+            });
+
         } else {
+            console.log(error);
             speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
+            self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
         }
 
-        self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
     });
 
     console.info("Ending getLocationHandler()");
@@ -160,7 +171,7 @@ const getMilesHandler = function () {
         var speechOutput = "";
         if (!error && response != null) {
             speechOutput = "There are " + response.odometer.value + " miles on the odometer!" +
-                " Since the last resest, you've driven " + response.distancesincereset.value + " miles" +
+                " Since the last reset, you've driven " + response.distancesincereset.value + " miles" +
                 " and since start " + response.distancesincestart.value + "!";
         } else {
             speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");

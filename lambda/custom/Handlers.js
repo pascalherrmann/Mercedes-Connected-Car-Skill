@@ -30,7 +30,7 @@ function getErrorMessage(error, standardText) {
 const lockDoorsHandler = function () {
     console.info("Starting lockDoorsHandler()");
 
-            this.emit(":tell", this.t('SAY_HELLO_MESSAGE'));
+            this.emit(":tell", this.t('SAY_HELLO_MESSAGE', "Pascal"));
 
 
     /*

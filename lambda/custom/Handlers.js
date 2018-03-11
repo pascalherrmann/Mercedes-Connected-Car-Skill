@@ -72,7 +72,9 @@ const getMilesHandler = function () {
     client.getMiles(function (error, response) {
         var speechOutput = "";
         if (!error && response != null) {
-            speechOutput = "There are " + response.odometer.value + " miles on the odometer!";
+            speechOutput = "There are " + response.odometer.value + " miles on the odometer!" +
+                " Since the last resest, you've driven " + response.distancesincereset.value + " miles" +
+                " and since start " + response.distancesincestart.value + "!";
         } else {
             speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
         }
@@ -90,19 +92,21 @@ const getMilesHandler = function () {
 const newSessionRequestHandler = function () {
     console.info("Starting newSessionRequestHandler()");
 
-    if (this.response.sessionAttributes != null) {
-        this.response.sessionAttributes.count++;
-    } else {
-        this.response.sessionAttributes = {
-            'count': 1
+    const self = this;
+    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
+    client.getCars(function (error, response) {
+        if (!error && response != null) {
+            self.attributes['carID'] = response[0].id;
         }
-    }
 
-    if (this.event.request.type === Events.LAUNCH_REQUEST) {
-        this.emit(Events.LAUNCH_REQUEST);
-    } else if (this.event.request.type === "IntentRequest") {
-        this.emit(this.event.request.intent.name);
-    }
+
+        if (self.event.request.type === Events.LAUNCH_REQUEST) {
+            self.emit(Events.LAUNCH_REQUEST);
+        } else if (self.event.request.type === "IntentRequest") {
+            self.emit(self.event.request.intent.name);
+        }
+
+    });
 
     console.info("Ending newSessionRequestHandler()");
 };
@@ -111,7 +115,6 @@ const launchRequestHandler = function () {
     console.info("Starting launchRequestHandler()");
     this.emit(":ask", Messages.WELCOME + Messages.WHAT_DO_YOU_WANT, Messages.WHAT_DO_YOU_WANT);
     console.info("Ending launchRequestHandler()");
-    //this.emit('AMAZON.HelpIntent');
 };
 
 const sessionEndedRequestHandler = function () {

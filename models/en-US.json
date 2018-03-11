@@ -105,6 +105,23 @@
             "what's the location of my mercedes",
             "where are you"
           ]
+        },
+                {
+                    "name": "CheckEnoughFuelIntent",
+                    "slots": [
+                        {
+                            "name": "destination",
+                            "type": "AMAZON.US_CITY"
+            }
+          ],
+                    "samples": [
+            "to I need to go to the gas station to drive to {destination}",
+            "do I need to get fuel to drive to {destination}",
+            "do I need to get gas to drie to {destination}",
+            "do I have enough gas to drive to {destination}",
+            "can I drive to {destination}",
+            "do i have anough fuel to drive to {destination}"
+          ]
         }
       ]
         }

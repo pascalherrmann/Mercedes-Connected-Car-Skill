@@ -13,6 +13,7 @@ const LOCK_DOORS = "LockDoorIntent";
 const UNLOCK_DOORS = "UnlockDoorIntent";
 const GET_DOORS = "GetDoorStatusIntent";
 const GET_LOCATION = "GetLocationIntent";
+const CHECK_ENOUGH_FUEL = "CheckEnoughFuelIntent";
 
 // Amazon built-in intents.
 const AMAZON_HELP = "AMAZON.HelpIntent";
@@ -29,5 +30,6 @@ module.exports = {
     "LOCK_DOORS": LOCK_DOORS,
     "UNLOCK_DOORS": UNLOCK_DOORS,
     "GET_DOORS": GET_DOORS,
-    "GET_LOCATION": GET_LOCATION
+    "GET_LOCATION": GET_LOCATION,
+    "CHECK_ENOUGH_FUEL": CHECK_ENOUGH_FUEL
 };

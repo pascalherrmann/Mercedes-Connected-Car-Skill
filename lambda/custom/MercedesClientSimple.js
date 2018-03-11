@@ -8,6 +8,7 @@ class MercedesClient {
         this.consentToken = token;
         this.endpoint = "api.mercedes-benz.com";
         this.port = 443;
+        this.vehicleID = null;
     }
 
     getCars(callback) {
@@ -66,8 +67,17 @@ class MercedesClient {
     }
 
     __getCallWithVehicleID(path, callback) {
+
+        if (this.vehicleID) {
+            console.log("using vehicle ID from cache!");
+            const replacedPath = path.format(this.vehicleID);
+            self.__getCall(replacedPath, callback);
+            return;
+        }
+
         var self = this;
         this.getCars(function (error, result) {
+            console.log("gerring cars!");
             if (error || result == 0) {
                 callback(error, result);
                 return;

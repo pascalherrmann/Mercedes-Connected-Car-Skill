@@ -4,6 +4,8 @@ const RestHelper = require('./rest-helper');
 const Helpers = require('./Helpers');
 const https = require("https");
 
+const litersPer100KM = 7.5;
+
 class MercedesClient {
 
     constructor(token) {

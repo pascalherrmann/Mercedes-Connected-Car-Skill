@@ -54,3 +54,32 @@ exports.getAddress = function (lat, long, callback) {
 
     });
 }
+
+exports.getDistance = function (lat, long, to, callback) {
+        googleMapsClient.distanceMatrix({
+        origins: [[lat,long]],
+        destinations: to
+    }, function (err, response) {
+            console.log(err);
+            console.log(response.json.rows[0]);
+        if (!err) {
+            console.log("callbakc!")
+
+            try{
+            const dist = response.json.rows[0].elements[0].distance.text;
+            const dur = response.json.rows[0].elements[0].duration.text;
+            const org = response.json.origin_addresses[0];
+            const dest = response.json.destination_addresses[0];
+                callback(err, dist, dur, org, dest);
+            } catch(e) {
+                callback(e, null, null, null, null);
+            }
+
+        }
+        else {
+            console.log("error callbck")
+            console.log(err);
+            callback(err, null, null, null, null);
+        }
+    });
+}

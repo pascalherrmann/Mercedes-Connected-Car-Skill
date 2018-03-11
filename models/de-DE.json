@@ -120,6 +120,23 @@
             "was ist die aktuelle position",
             "wo bist du gerade"
           ]
+        },
+                {
+                    "name": "CheckEnoughFuelIntent",
+                    "slots": [
+                        {
+                            "name": "destination",
+                            "type": "AMAZON.US_CITY"
+            }
+          ],
+                    "samples": [
+            "habe ich genug benzin um nach {destination} zu fahren",
+            "habe ich genug sprit um nach {destination} zu fahren",
+            "reicht das benzin bis nach {destination}",
+            "reicht der sprit bis nach {destination}",
+            "reicht der tank bis nach {destination}",
+            "reicht der tank bis {destination}"
+          ]
         }
       ]
         }

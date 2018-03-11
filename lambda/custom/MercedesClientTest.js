@@ -10,3 +10,22 @@ client.getDoors(function (err, res) {
         console.log(err);
     }
 });
+
+
+
+var googleMapsClient = require("./GoogleMapsClient");
+
+
+googleMapsClient.getDistance(37, -122, "Los Angeles", function (distance, duration, origin, destination) {
+        console.log(distance);
+        console.log(duration);
+        console.log(origin);
+        console.log(destination);
+
+
+        if (distance && duration && origin && destination) {
+            console.log("GREAT")
+        } else {
+            console.log("shit")
+        }
+});

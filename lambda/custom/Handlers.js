@@ -96,7 +96,7 @@ const getLocationHandler = function () {
                 if (city) {
                     speechOutput = "The car's position is: " + city;
                 } else {
-                    speechOutput = "The car's position is: Longitude=" + response.latitude.value + ", Latitude=" + response.longitude.value, + "!";
+                    speechOutput = "The car's position is: Longitude=" + response.latitude.value + ", Latitude=" + response.longitude.value, +"!";
                 }
                 self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
             });
@@ -141,6 +141,27 @@ const getFuelLevelHandler = function () {
     });
 
     console.info("Ending getFuelLevelHandler()");
+}
+
+const checkEnoughFuelHandler = function () {
+    console.info("Starting checkEnoughFuelHandler()");
+
+    const destinationSlot = this.event.request.intent.slots.destination;
+    const city = destinationSlot.value;
+    var self = this;
+
+    GoogleMapsClient.getDistance(37, -122, city, function (err, distance, duration, origin, destination) {
+
+        if (distance && duration && origin && destination) {
+            self.emit(":ask", "The distance between Sunnyvale and " + destination + " is " + distance + "!", Messages.WHAT_DO_YOU_WANT);
+        } else {
+            console.log(err);
+            self.emit(":ask", "There was a problem finding the distance to " + city + "!", Messages.WHAT_DO_YOU_WANT);
+        }
+
+    });
+
+    console.info("Ending checkEnoughFuelHandler()");
 }
 
 const getLicensePlateHandler = function () {
@@ -266,5 +287,6 @@ handlers[Intents.LOCK_DOORS] = lockDoorsHandler;
 handlers[Intents.UNLOCK_DOORS] = unlockDoorsHandler;
 handlers[Intents.GET_DOORS] = getDoorsHandler;
 handlers[Intents.GET_LOCATION] = getLocationHandler;
+handlers[Intents.CHECK_ENOUGH_FUEL] = checkEnoughFuelHandler;
 
 module.exports = handlers;

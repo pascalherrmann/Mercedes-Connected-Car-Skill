@@ -54,6 +54,28 @@
             "what does the odometer say",
             "can you give me the odometer value"
           ]
+        },
+                {
+                    "name": "LockDoorIntent",
+                    "samples": [
+            "lock the doors",
+            "lock the car",
+            "lock the vehicle",
+            "lock my Mercedes",
+            "lock my car",
+            "lock my vehicle"
+          ]
+        },
+                {
+                    "name": "UnlockDoorIntent",
+                    "samples": [
+            "unlock the doors",
+            "unlock the car",
+            "unlock the vehicle",
+            "unlock my Mercedes",
+            "unlock my car",
+            "unlock my vehicle"
+          ]
         }
       ]
         }

@@ -11,6 +11,22 @@ const APP_ID = "amzn1.ask.skill.6505aba2-e55a-4446-9f26-c5041262cb6b";
 exports.handler = (event, context, callback) => {
     const alexa = Alexa.handler(event, context);
     alexa.appId = APP_ID;
+
+
+    const languageStrings = {
+    'en-US': {
+        'translation': {
+            'SAY_HELLO_MESSAGE' : 'Hello World!'
+        }
+    },
+    'de-DE': {
+        'translation': {
+            'SAY_HELLO_MESSAGE' : 'Hallo Welt!'
+        }
+    }
+};
+        alexa.resources = languageStrings;
+
     alexa.registerHandlers(Handlers);
     alexa.execute();
 };

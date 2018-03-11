@@ -1,0 +1,86 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "mein mercedes",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+        },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+        },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+        },
+                {
+                    "name": "GetFuelLevelIntent",
+                    "samples": [
+            "sage mir den benzin stand",
+            "wie viel benzin habe ich",
+            "muss ich tanken",
+            "wie viel benzin ist im auto",
+            "wie viel sprit ist im auto",
+            "wie viel benzin ist in meinem mercedes",
+            "wie viel sprit ist in meinem mercedes",
+            "was ist der benzin stand"
+          ]
+        },
+                {
+                    "name": "GetLicensePlateIntent",
+                    "samples": [
+            "welches nummernschild habe ich",
+            "welches nummernschild hat mein mercedes",
+            "welches nummernschild hat mein auto",
+            "sage mir mein nummernschild"
+          ]
+        },
+                {
+                    "name": "GetMilesIntent",
+                    "samples": [
+            "wie viele kilometer bin ich gefahren",
+            "was ist der odometer stand",
+            "was ist der kilometerstand",
+            "sag mir den kilometerstand",
+            "what is the odometer value"
+          ]
+        },
+                {
+                    "name": "LockDoorIntent",
+                    "samples": [
+            "sperre die türen",
+            "sperre die tür",
+            "schließe die türen ab",
+            "schließe die tür ab",
+            "schließe das auto ab",
+            "schließe meinen mercedes ab",
+            "sperre die türen ab",
+            "sperre meinen mercedes ab",
+            "sperre das auto ab",
+            "sperre die tür ab"
+          ]
+        },
+                {
+                    "name": "UnlockDoorIntent",
+                    "samples": [
+            "öffne das auto",
+            "öffne die tür",
+            "öffne die türen",
+            "schließe das auto auf",
+            "schließe mein auto auf",
+            "schließe die türen auf",
+            "schließe meinen mercedes auf",
+            "entsperre meinen mercedes",
+            "entsperre mein auto",
+            "entsperre mein fahrzeug",
+            "entriegel die türen",
+            "entriegel das auto",
+            "entriegel das fahrzeug"
+          ]
+        }
+      ]
+        }
+    }
+}

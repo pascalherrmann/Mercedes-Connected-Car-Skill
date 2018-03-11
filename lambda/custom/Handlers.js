@@ -20,11 +20,53 @@ function getErrorMessage(error, standardText) {
         case 429:
             return Messages.ERROR_429;
         case 500:
-            return Messages.ERROR_500
+            return Messages.ERROR_500;
         default:
-            return standardText
+            return standardText;
     }
 
+}
+
+const lockDoorsHandler = function () {
+    console.info("Starting lockDoorsHandler()");
+
+            this.emit(":tell", this.t('SAY_HELLO_MESSAGE'));
+
+
+    /*
+
+    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
+    const self = this;
+    client.getFuel(function (error, response) {
+        var speechOutput = "";
+        if (!error && response.fuellevelpercent.value != null) {
+            speechOutput = "There are " + response.fuellevelpercent.value + " liters of fuel in your Mercedes!";
+        } else {
+            speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
+        }
+        self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
+    });
+    */
+
+    console.info("Ending lockDoorsHandler()");
+}
+
+const unlockDoorsHandler = function () {
+    console.info("Starting unlockDoorsHandler()");
+
+    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
+    const self = this;
+    client.getFuel(function (error, response) {
+        var speechOutput = "";
+        if (!error && response.fuellevelpercent.value != null) {
+            speechOutput = "There are " + response.fuellevelpercent.value + " liters of fuel in your Mercedes!";
+        } else {
+            speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
+        }
+        self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
+    });
+
+    console.info("Ending unlockDoorsHandler()");
 }
 
 const getFuelLevelHandler = function () {
@@ -37,6 +79,7 @@ const getFuelLevelHandler = function () {
         if (!error && response.fuellevelpercent.value != null) {
             speechOutput = "There are " + response.fuellevelpercent.value + " liters of fuel in your Mercedes!";
         } else {
+            console.log(error);
             speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
         }
         self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
@@ -97,6 +140,7 @@ const newSessionRequestHandler = function () {
     client.getCars(function (error, response) {
         if (!error && response != null) {
             self.attributes['carID'] = response[0].id;
+            self.attributes['licenseplate'] = response[0].licenseplate;
         }
 
 
@@ -163,5 +207,7 @@ handlers[Intents.AMAZON_HELP] = amazonHelpHandler;
 handlers[Intents.GET_FUEL_LEVEL] = getFuelLevelHandler;
 handlers[Intents.GET_LICENSE_PLATE] = getLicensePlateHandler;
 handlers[Intents.GET_MILES] = getMilesHandler;
+handlers[Intents.LOCK_DOORS] = lockDoorsHandler;
+handlers[Intents.UNLOCK_DOORS] = unlockDoorsHandler;
 
 module.exports = handlers;

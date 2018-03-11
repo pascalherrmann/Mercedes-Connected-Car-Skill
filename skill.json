@@ -1,20 +1,23 @@
 {
-  "manifest": {
-    "publishingInformation": {
-      "locales": {
-        "en-US": {
-          "name": "MyMercedes"
-        }
-      }
-    },
-    "apis": {
-      "custom": {
-        "endpoint": {
-          "sourceDir": "lambda/custom"
+    "manifest": {
+        "publishingInformation": {
+            "locales": {
+                "en-US": {
+                    "name": "MyMercedes"
+                },
+                "de-DE": {
+                    "name": "MeinMercedes"
+                }
+            }
         },
-        "interfaces": []
-      }
-    },
-    "manifestVersion": "1.0"
-  }
+        "apis": {
+            "custom": {
+                "endpoint": {
+                    "sourceDir": "lambda/custom"
+                },
+                "interfaces": []
+            }
+        },
+        "manifestVersion": "1.0"
+    }
 }

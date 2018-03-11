@@ -9,6 +9,8 @@
 const GET_FUEL_LEVEL = "GetFuelLevelIntent";
 const GET_LICENSE_PLATE = "GetLicensePlateIntent";
 const GET_MILES = "GetMilesIntent";
+const LOCK_DOORS = "LockDoorIntent";
+const UNLOCK_DOORS = "UnlockDoorIntent";
 
 // Amazon built-in intents.
 const AMAZON_HELP = "AMAZON.HelpIntent";
@@ -21,5 +23,7 @@ module.exports = {
     "GET_MILES": GET_MILES,
     "AMAZON_HELP": AMAZON_HELP,
     "AMAZON_CANCEL": AMAZON_CANCEL,
-    "AMAZON_STOP": AMAZON_STOP
+    "AMAZON_STOP": AMAZON_STOP,
+    "LOCK_DOORS": LOCK_DOORS,
+    "UNLOCK_DOORS": UNLOCK_DOORS
 };

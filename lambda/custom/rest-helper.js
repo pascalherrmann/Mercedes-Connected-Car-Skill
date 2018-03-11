@@ -16,9 +16,13 @@ exports.getJSON = function (options, onResult) {
         });
 
         res.on('end', function () {
-            //console.log(output)
+            console.log(output)
+            try{
             var obj = JSON.parse(output);
             onResult(res.statusCode, obj);
+            } catch(e) {
+                onResult(e, null);
+            }
         });
 
         res.on('uncaughtException', function (err) {

@@ -1,8 +1,8 @@
 const MercedesClient = require('./MercedesClientSimple');
 
-var client = new MercedesClient.MercedesClient("5b8cdac6-9a97-4735-ab9b-718a7f58783d");
+var client = new MercedesClient.MercedesClient("a60a9008-b35e-41e9-a39a-4a86f2da7352");
 
-client.postDoors(true, function (err, res) {
+client.getDoors(function (err, res) {
     if (!err && res) {
         console.log(res);
     } else {

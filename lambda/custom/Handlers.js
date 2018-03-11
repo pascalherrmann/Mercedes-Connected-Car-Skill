@@ -44,13 +44,60 @@ function handleLock(locking, self) {
 
 const getDoorsHandler = function () {
     console.info("Starting getDoorsHandler()");
-    this.emit(":tell", this.t('SAY_HELLO_MESSAGE', "Pascal"));
+    //this.emit(":tell", this.t('SAY_HELLO_MESSAGE', "Pascal"));
+
+    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
+    const self = this;
+    client.getDoors(function (error, response) {
+        var speechOutput = "The ";
+        if (!error && response) {
+
+            const doors = ["doorlockstatusfrontleft", "doorlockstatusfrontright", "doorlockstatusrearright", "doorlockstatusrearleft"];
+            const doornames = ["Front Left Door", "Front Right Door", "Rear Right Door", "Rear Left Door"];
+
+            var first = true;
+            for (var i = 0; i < doors.length; i++) {
+                if (response[doors[i]].value == "UNLOCKED") {
+                    if (first) {
+                        first = false;
+                    } else {
+                        speechOutput += ", ";
+                    }
+                    speechOutput = speechOutput + doornames[i];
+                }
+            }
+
+            speechOutput += " are unlocked!";
+            if (speechOutput == "The  are unlocked!") {
+                speechOutput = "All doors are locked!";
+            }
+
+        } else {
+            console.log(error);
+            speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
+        }
+        self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
+    });
+
     console.info("Ending getDoorsHandler()");
 }
 
 const getLocationHandler = function () {
     console.info("Starting getLocationHandler()");
-    this.emit(":tell", this.t('SAY_HELLO_MESSAGE', "Pascal"));
+
+    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
+    const self = this;
+    client.getLocation(function (error, response) {
+        var speechOutput = "";
+        if (!error && response != null) {
+            speechOutput = "Your Position is: Longitude=" + response.longitude.value + ", Latitude=" + response.latitude.value + "!";
+        } else {
+            speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
+        }
+
+        self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
+    });
+
     console.info("Ending getLocationHandler()");
 }
 

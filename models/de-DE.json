@@ -81,6 +81,45 @@
             "entriegel das auto",
             "entriegel das fahrzeug"
           ]
+        },
+                {
+                    "name": "GetDoorStatusIntent",
+                    "samples": [
+            "welche türen sind geöffnet",
+            "welche türen sind geschlossen",
+            "welche türen sind gesperrt",
+            "welche türen sind verriegelt",
+            "welche türen sind entriegelt",
+            "wie viele türen sind geöffnet",
+            "wie viele türen sind geschlossen",
+            "wie viele türen sind gesperrt",
+            "wie viele türen sind entriegelt",
+            "wie viele türen sind verriegelt",
+            "ist das auto geöffnet",
+            "ist das auto geschlossen",
+            "ist das auto gesperrt",
+            "ist das auto verriegelt",
+            "ist das auto entriegelt",
+            "ist mein mercedes geöffnet",
+            "ist mein mercedes geschlossen",
+            "ist mein mercedes gesperrt",
+            "ist mein auto abgeschlossen",
+            "ist mein mercedes abgeschlossen",
+            "ist mein mercedes verriegelt",
+            "ist mein mercedes entriegelt"
+          ]
+        },
+                {
+                    "name": "GetLocationIntent",
+                    "samples": [
+            "wo ist mein auto",
+            "wo ist das auto",
+            "wo ist mein mercedes",
+            "wo bist du",
+            "was ist die aktuelle position des autos",
+            "was ist die aktuelle position",
+            "wo bist du gerade"
+          ]
         }
       ]
         }

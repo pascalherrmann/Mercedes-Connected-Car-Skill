@@ -42,6 +42,18 @@ function handleLock(locking, self) {
 
 }
 
+const getDoorsHandler = function () {
+    console.info("Starting getDoorsHandler()");
+    this.emit(":tell", this.t('SAY_HELLO_MESSAGE', "Pascal"));
+    console.info("Ending getDoorsHandler()");
+}
+
+const getLocationHandler = function () {
+    console.info("Starting getLocationHandler()");
+    this.emit(":tell", this.t('SAY_HELLO_MESSAGE', "Pascal"));
+    console.info("Ending getLocationHandler()");
+}
+
 const lockDoorsHandler = function () {
     console.info("Starting lockDoorsHandler()");
     handleLock(true, this);
@@ -194,5 +206,7 @@ handlers[Intents.GET_LICENSE_PLATE] = getLicensePlateHandler;
 handlers[Intents.GET_MILES] = getMilesHandler;
 handlers[Intents.LOCK_DOORS] = lockDoorsHandler;
 handlers[Intents.UNLOCK_DOORS] = unlockDoorsHandler;
+handlers[Intents.GET_DOORS] = getDoorsHandler;
+handlers[Intents.GET_LOCATION] = getLocationHandler;
 
 module.exports = handlers;

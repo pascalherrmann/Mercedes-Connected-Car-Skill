@@ -76,6 +76,35 @@
             "unlock my car",
             "unlock my vehicle"
           ]
+        },
+                {
+                    "name": "GetDoorStatusIntent",
+                    "samples": [
+            "is my car locked",
+            "is my car unlocked",
+            "is my car opened",
+            "is my car closed",
+            "which doors are locked",
+            "which doors are unlocked",
+            "which doors are opened",
+            "which doors are closed",
+            "how many cars are locked",
+            "how many cars are unlocked",
+            "how many cars are opened",
+            "how many cars are closed"
+          ]
+        },
+                {
+                    "name": "GetLocationIntent",
+                    "samples": [
+            "where is my car",
+            "where is my mercedes",
+            "what is the location of my car",
+            "what is the location of my mercedes",
+            "what's the location of my car",
+            "what's the location of my mercedes",
+            "where are you"
+          ]
         }
       ]
         }

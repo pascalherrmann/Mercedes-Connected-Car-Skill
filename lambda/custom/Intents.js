@@ -11,6 +11,8 @@ const GET_LICENSE_PLATE = "GetLicensePlateIntent";
 const GET_MILES = "GetMilesIntent";
 const LOCK_DOORS = "LockDoorIntent";
 const UNLOCK_DOORS = "UnlockDoorIntent";
+const GET_DOORS = "GetDoorStatusIntent";
+const GET_LOCATION = "GetLocationIntent";
 
 // Amazon built-in intents.
 const AMAZON_HELP = "AMAZON.HelpIntent";
@@ -25,5 +27,7 @@ module.exports = {
     "AMAZON_CANCEL": AMAZON_CANCEL,
     "AMAZON_STOP": AMAZON_STOP,
     "LOCK_DOORS": LOCK_DOORS,
-    "UNLOCK_DOORS": UNLOCK_DOORS
+    "UNLOCK_DOORS": UNLOCK_DOORS,
+    "GET_DOORS": GET_DOORS,
+    "GET_LOCATION": GET_LOCATION
 };

@@ -11,25 +11,20 @@ const Messages = require('./Messages');
 */
 
 function getErrorMessage(error, standardText) {
-    var speechOutput;
 
     switch (error) {
         case 403:
-            speechOutput = "There was a permission problem. Please try to re-link your Mercedes account!";
+            return Messages.ERROR_403;
         case 408:
-            speechOutput = "I could not connect to you car, because the simulator is not running at the moment!";
-            break;
+            return Messages.ERROR_408;
         case 429:
-            speechOutput = "The quota limit is exceeded. Please try again in a minute!";
-            break;
+            return Messages.ERROR_429;
         case 500:
-            speechOutput = "There was an internal problem on the Mercedes API!"
-            break;
+            return Messages.ERROR_500
         default:
-            speechOutput = standardText;
+            return standardText
     }
 
-    return speechOutput;
 }
 
 const getFuelLevelHandler = function () {
@@ -38,14 +33,13 @@ const getFuelLevelHandler = function () {
     const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
     const self = this;
     client.getFuel(function (error, response) {
+        var speechOutput = "";
         if (!error && response.fuellevelpercent.value != null) {
-            var speechOutput = "There are " + response.fuellevelpercent.value + " liters of fuel in your Mercedes!";
-            self.response.speak(speechOutput);
+            speechOutput = "There are " + response.fuellevelpercent.value + " liters of fuel in your Mercedes!";
         } else {
-            const speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
-            self.response.speak(speechOutput);
+            speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
         }
-        self.emit(':responseReady');
+        self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
     });
 
     console.info("Ending getFuelLevelHandler()");
@@ -57,43 +51,33 @@ const getLicensePlateHandler = function () {
     const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
     const self = this;
     client.getCars(function (error, response) {
+        var speechOutput = "";
         if (!error && response != null) {
-            self.response.speak("Your Mercedes-Benz License Plate is " + response[0].licenseplate);
-
-            self.emit(':responseReady');
+            speechOutput = "Your Mercedes-Benz License Plate is " + response[0].licenseplate;
         } else {
-            const speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
-            self.response.speak(speechOutput);
+            speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
         }
 
-        self.emit(':responseReady');
+        self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
     });
 
     console.info("Ending getLicensePlateHandler()");
 }
 
 const getMilesHandler = function () {
-    /*
-        const speechOutput = "Soon, I will be able to tell you the odometer-value of your Mercedes!";
-        this.response.speak(speechOutput);
-        this.emit(':responseReady');
-    */
     console.info("Starting getMilesHandler()");
 
     const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
     const self = this;
     client.getMiles(function (error, response) {
+        var speechOutput = "";
         if (!error && response != null) {
-
-            self.response.speak("Your Mercedes-Benz License Plate is " + response[0].licenseplate);
-
-            self.emit(':responseReady');
+            speechOutput = "There are " + response.odometer.value + " miles on the odometer!";
         } else {
-            const speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
-            self.response.speak(speechOutput);
+            speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
         }
 
-        self.emit(':responseReady');
+        self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
     });
 
     console.info("Ending getMilesHandler()");
@@ -124,9 +108,6 @@ const newSessionRequestHandler = function () {
 };
 
 const launchRequestHandler = function () {
-    this.response.sessionAttributes = {
-        "jo": "jo"
-    };
     console.info("Starting launchRequestHandler()");
     this.emit(":ask", Messages.WELCOME + Messages.WHAT_DO_YOU_WANT, Messages.WHAT_DO_YOU_WANT);
     console.info("Ending launchRequestHandler()");
@@ -149,27 +130,18 @@ const amazonHelpHandler = function () {
     console.info("Starting amazonHelpHandler()");
     this.emit(":ask", Messages.HELP, Messages.HELP);
     console.info("Ending amazonHelpHandler()");
-
-    //const speechOutput = HELP_MESSAGE;
-    //const reprompt = HELP_REPROMPT;
-    //this.response.speak(speechOutput).listen(reprompt);
-    //this.emit(':responseReady');
 };
 
 const amazonCancelHandler = function () {
     console.info("Starting amazonCancelHandler()");
     this.emit(":tell", Messages.GOODBYE);
     console.info("Ending amazonCancelHandler()");
-    //this.response.speak(STOP_MESSAGE);
-    //this.emit(':responseReady');
 };
 
 const amazonStopHandler = function () {
     console.info("Starting amazonStopHandler()");
     this.emit(":ask", Messages.STOP, Messages.STOP);
     console.info("Ending amazonStopHandler()");
-    //this.response.speak(STOP_MESSAGE);
-    //this.emit(':responseReady');
 };
 
 const handlers = {};

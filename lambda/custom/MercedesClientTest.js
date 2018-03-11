@@ -1,8 +1,8 @@
 const MercedesClient = require('./MercedesClientSimple');
 
-var client = new MercedesClient.MercedesClient("f21e7692-a72e-42ed-a7c5-71bdd8200fcd");
+var client = new MercedesClient.MercedesClient("5b8cdac6-9a97-4735-ab9b-718a7f58783d");
 
-client.getMiles(function (err, res) {
+client.postDoors(true, function (err, res) {
     if (!err && res) {
         console.log(res);
     } else {

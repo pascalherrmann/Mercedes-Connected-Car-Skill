@@ -27,45 +27,30 @@ function getErrorMessage(error, standardText) {
 
 }
 
-const lockDoorsHandler = function () {
-    console.info("Starting lockDoorsHandler()");
+function handleLock(locking, self) {
 
-            this.emit(":tell", this.t('SAY_HELLO_MESSAGE', "Pascal"));
-
-
-    /*
-
-    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
-    const self = this;
-    client.getFuel(function (error, response) {
+    const client = new MercedesClient.MercedesClient(self.event.session.user.accessToken);
+    client.postDoors(locking, function (error, response) {
         var speechOutput = "";
-        if (!error && response.fuellevelpercent.value != null) {
-            speechOutput = "There are " + response.fuellevelpercent.value + " liters of fuel in your Mercedes!";
+        if (!error && response.status == "INITIATED") {
+            speechOutput = locking ? "Applied Locking Door Command!" : "Applied Unlocking Door Command!";
         } else {
             speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
         }
         self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
     });
-    */
 
+}
+
+const lockDoorsHandler = function () {
+    console.info("Starting lockDoorsHandler()");
+    handleLock(true, this);
     console.info("Ending lockDoorsHandler()");
 }
 
 const unlockDoorsHandler = function () {
     console.info("Starting unlockDoorsHandler()");
-
-    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
-    const self = this;
-    client.getFuel(function (error, response) {
-        var speechOutput = "";
-        if (!error && response.fuellevelpercent.value != null) {
-            speechOutput = "There are " + response.fuellevelpercent.value + " liters of fuel in your Mercedes!";
-        } else {
-            speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
-        }
-        self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
-    });
-
+    handleLock(false, this);
     console.info("Ending unlockDoorsHandler()");
 }
 

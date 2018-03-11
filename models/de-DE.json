@@ -19,6 +19,8 @@
                     "name": "GetFuelLevelIntent",
                     "samples": [
             "sage mir den benzin stand",
+            "wie viel benzin ist im tank",
+            "wie viel sprit ist im tank",
             "wie viel benzin habe ich",
             "muss ich tanken",
             "wie viel benzin ist im auto",

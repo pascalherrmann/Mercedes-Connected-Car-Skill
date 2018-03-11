@@ -1,3 +1,5 @@
+'use strict';
+
 const languageStrings = {
     'en-US': {
         'translation': {

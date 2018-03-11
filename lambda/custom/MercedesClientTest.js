@@ -1,6 +1,13 @@
 const MercedesClient = require('./MercedesClientSimple');
 
-var client = new MercedesClient.MercedesClient("a60a9008-b35e-41e9-a39a-4a86f2da7352");
+var client = new MercedesClient.MercedesClient("9cbd145e-d6a0-4fa0-bbff-6c1d7b5191f0");
+
+                    client.getStateOfCharge(function (error, response) {
+                        console.log(response)
+
+                    });
+
+/*
 
 client.getDoors(function (err, res) {
     if (!err && res) {
@@ -15,7 +22,6 @@ client.getDoors(function (err, res) {
 
 var googleMapsClient = require("./GoogleMapsClient");
 
-
 googleMapsClient.getDistance(37, -122, "Los Angeles", function (distance, duration, origin, destination) {
         console.log(distance);
         console.log(duration);
@@ -29,3 +35,4 @@ googleMapsClient.getDistance(37, -122, "Los Angeles", function (distance, durati
             console.log("shit")
         }
 });
+*/

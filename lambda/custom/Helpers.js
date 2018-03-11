@@ -1,3 +1,5 @@
+'use strict';
+
 // https://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format
 if (!String.prototype.format) {
   String.prototype.format = function() {

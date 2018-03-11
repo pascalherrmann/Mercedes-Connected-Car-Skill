@@ -1,3 +1,5 @@
+'use strict';
+
 const RestHelper = require('./rest-helper');
 const _ = require("./Helpers");
 
@@ -8,7 +10,7 @@ class MercedesClient {
         this.consentToken = token;
         this.endpoint = "api.mercedes-benz.com";
         this.port = 443;
-        this.vehicleID = null;
+        this.vehicleID = "FA09055DE6731E05C7";
     }
 
     getCars(callback) {
@@ -71,7 +73,7 @@ class MercedesClient {
         if (this.vehicleID) {
             console.log("using vehicle ID from cache!");
             const replacedPath = path.format(this.vehicleID);
-            self.__getCall(replacedPath, callback);
+            this.__getCall(replacedPath, callback);
             return;
         }
 
@@ -131,20 +133,3 @@ class MercedesClient {
 }
 
 module.exports.MercedesClient = MercedesClient;
-
-/*
- * Testing
- */
-/*
-const client = new MercedesClient("dc735bbc-7127-45d8-85f2-7ecd697aa157");
-
-
-client.getDoors(function (err, res) {
-    console.log(res);
-})
-
-
-client.postDoors(false, function (err, res){
-    console.log(res);
-})
-*/

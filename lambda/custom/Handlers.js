@@ -57,7 +57,7 @@ const getDoorsHandler = function () {
             const doornames = ["Front Left Door", "Front Right Door", "Rear Right Door", "Rear Left Door"];
 
             var first = true;
-            for (var i = 0; i < doors.length; i++) {
+            for (let i = 0; i < doors.length; i++) {
                 if (response[doors[i]].value == "UNLOCKED") {
                     if (first) {
                         first = false;
@@ -146,17 +146,54 @@ const getFuelLevelHandler = function () {
 const checkEnoughFuelHandler = function () {
     console.info("Starting checkEnoughFuelHandler()");
 
+    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
     const destinationSlot = this.event.request.intent.slots.destination;
     const city = destinationSlot.value;
     var self = this;
 
-    GoogleMapsClient.getDistance(37, -122, city, function (err, distance, duration, origin, destination) {
+    client.getLocation(function (error, response) {
+        var speechOutput = "";
+        if (!error && response != null) {
 
-        if (distance && duration && origin && destination) {
-            self.emit(":ask", "The distance between Sunnyvale and " + destination + " is " + distance + "!", Messages.WHAT_DO_YOU_WANT);
+            GoogleMapsClient.getDistance(response.latitude.value, response.longitude.value, city, function (err, distance, duration, origin, destination) {
+
+                if (distance && duration && origin && destination) {
+
+                    client.getStateOfCharge(function (error, response) {
+                        console.log(response)
+                        if (!error && response.stateofcharge.value != null) {
+
+                            const chargeLevel = response.stateofcharge.value;
+                            const maxRange = 417;
+                            const remainingRange = maxRange * chargeLevel / 100;
+
+                            speechOutput = "The distance between your current location and " + city + " is " + distance + "! Your Mercedes has a state of charge of " + chargeLevel + "%, with an estimated range of " + remainingRange + "km!";
+
+                            if (remainingRange >= maxRange) {
+                                speechOutput += " Have a fun trip!";
+                            } else {
+                                speechOutput += " That's not enough! You will need to charge your car!";
+                            }
+
+                        } else {
+                            console.log(error);
+                            speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
+                        }
+                        self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
+                    });
+
+                } else {
+                    console.log(err);
+                    console.log("ERROR COULDNT FINT!")
+                    self.emit(":ask", "There was a problem finding the distance to " + city + "!", Messages.WHAT_DO_YOU_WANT);
+                }
+
+            });
+
         } else {
-            console.log(err);
-            self.emit(":ask", "There was a problem finding the distance to " + city + "!", Messages.WHAT_DO_YOU_WANT);
+            console.log(error);
+            speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
+            self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
         }
 
     });
@@ -191,14 +228,29 @@ const getMilesHandler = function () {
     client.getMiles(function (error, response) {
         var speechOutput = "";
         if (!error && response != null) {
-            speechOutput = "There are " + response.odometer.value + " miles on the odometer!" +
-                " Since the last reset, you've driven " + response.distancesincereset.value + " miles" +
-                " and since start " + response.distancesincestart.value + "!";
+
+            const imageObj = {
+                smallImageUrl: 'https://s.aolcdn.com/dims-global/dims3/GLOB/legacy_thumbnail/788x525/quality/85/https://s.aolcdn.com/commerce/autodata/images/USC60MBC891A021001.jpg',
+                largeImageUrl: 'https://s.aolcdn.com/commerce/autodata/images/USC60MBC891A021001.jpg'
+            };
+
+            const total = response.odometer.value;
+            const sinceReset = response.distancesincereset.value;
+            const current = response.distancesincestart.value;
+
+            speechOutput = "There are " + total + " km on the odometer!" +
+                " Since the last reset, you've driven " + sinceReset + " km" +
+                " and since start " + current + "!";
+            const cardTitle = "Your Car's Odometer Values:"
+            const cardContent = `\n\nTotal: ${total}km\n\nSince last reset: ${sinceReset}km\n\nSince start: ${current}km`;
+            self.emit(':askWithCard', speechOutput, Messages.WHAT_DO_YOU_WANT, cardTitle, cardContent, imageObj);
+
         } else {
+            console.log(error);
             speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
+            self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
         }
 
-        self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
     });
 
     console.info("Ending getMilesHandler()");
@@ -218,7 +270,6 @@ const newSessionRequestHandler = function () {
             self.attributes['carID'] = response[0].id;
             self.attributes['licenseplate'] = response[0].licenseplate;
         }
-
 
         if (self.event.request.type === Events.LAUNCH_REQUEST) {
             self.emit(Events.LAUNCH_REQUEST);

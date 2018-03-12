@@ -60,8 +60,11 @@
                 {
                     "name": "LockDoorIntent",
                     "samples": [
+            "close the doors",
             "lock the doors",
+            "close the car",
             "lock the car",
+            "close the vehicle",
             "lock the vehicle",
             "lock my Mercedes",
             "lock my car",
@@ -132,6 +135,7 @@
             "can I drive to {destination}",
             "can I drive to {destination} with one battery load",
             "can I drive to {destination} with one charge",
+            "will I make it to {destination}",
             "do i have anough fuel to drive to {destination}"
           ]
         }

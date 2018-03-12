@@ -5,10 +5,11 @@
 > Alexa, start *My Mercedes*!
 
 ##### Intents
+> What is my license plate?
 
 > What is the fuel level?
 
-> What is my license plate?
+> What is the odometer value?
 
 > Which doors are locked?
 

@@ -18,7 +18,12 @@
                 {
                     "name": "GetFuelLevelIntent",
                     "samples": [
+            "sage mir den benzinstand",
             "sage mir den benzin stand",
+            "wie ist der benzinstand",
+            "wie ist der tank stand",
+            "wie ist der tankstand",
+            "wie ist der benzin stand",
             "wie viel benzin ist im tank",
             "wie viel sprit ist im tank",
             "wie viel benzin habe ich",
@@ -43,10 +48,11 @@
                     "name": "GetMilesIntent",
                     "samples": [
             "wie viele kilometer bin ich gefahren",
+            "wie viele meilen bin ich gefahren",
             "was ist der odometer stand",
             "was ist der kilometerstand",
             "sag mir den kilometerstand",
-            "what is the odometer value"
+            "was sagt der odometer"
           ]
         },
                 {
@@ -135,7 +141,16 @@
             "reicht das benzin bis nach {destination}",
             "reicht der sprit bis nach {destination}",
             "reicht der tank bis nach {destination}",
-            "reicht der tank bis {destination}"
+            "reicht der tank bis {destination}",
+            "schaffe ich es nach {destination}",
+            "hält der Akku bis {destination}",
+            "wie viele Ladungen brauche ich bis {destination}",
+            "wie viele Akku Ladungen brauche ich bis {destination}",
+            "schaffe ich es mit einer Ladung nach {destination}",
+            "reicht der aktuelle Ladestand bis {destination}",
+            "reicht die aktuelle Akku-Ladung bis {destination}",
+            "reicht die aktuelle Ladung bis {destination}",
+            "reicht die Batterie bis {destination}"
           ]
         }
       ]

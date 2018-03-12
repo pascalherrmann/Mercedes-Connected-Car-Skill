@@ -5,23 +5,22 @@ const MercedesClient = require('./MercedesClientSimple');
 const GoogleMapsClient = require('./GoogleMapsClient');
 const Intents = require('./Intents');
 const Events = require('./Events');
-const Messages = require('./Messages');
 
 /*
     All Handlers for Custom Events and Intents
 */
 
-function getErrorMessage(error, standardText) {
+function getErrorMessage(self, error, standardText) {
 
     switch (error) {
         case 403:
-            return Messages.ERROR_403;
+            return self.t("ERROR_403");
         case 408:
-            return Messages.ERROR_408;
+            return self.t("ERROR_408");
         case 429:
-            return Messages.ERROR_429;
+            return self.t("ERROR_429");
         case 500:
-            return Messages.ERROR_500;
+            return self.t("ERROR_500");
         default:
             return standardText;
     }
@@ -34,50 +33,48 @@ function handleLock(locking, self) {
     client.postDoors(locking, function (error, response) {
         var speechOutput = "";
         if (!error && response.status == "INITIATED") {
-            speechOutput = locking ? "Applied Locking Door Command!" : "Applied Unlocking Door Command!";
+            speechOutput = locking ? self.t("FEEDBACK_LOCKING") : self.t("FEEDBACK_UNLOCKING");
         } else {
-            speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
+            speechOutput = getErrorMessage(self, error, self.t("ERROR"));
         }
-        self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
+        self.emit(":ask", speechOutput, self.t("WHAT_DO_YOU_WANT"));
     });
 
 }
 
 const getDoorsHandler = function () {
     console.info("Starting getDoorsHandler()");
-    //this.emit(":tell", this.t('SAY_HELLO_MESSAGE', "Pascal"));
 
     const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
     const self = this;
     client.getDoors(function (error, response) {
-        var speechOutput = "The ";
+        var speechOutput = "";
         if (!error && response) {
 
             const doors = ["doorlockstatusfrontleft", "doorlockstatusfrontright", "doorlockstatusrearright", "doorlockstatusrearleft"];
-            const doornames = ["Front Left Door", "Front Right Door", "Rear Right Door", "Rear Left Door"];
+            const doornames = [self.t("DOOR_FRONT_LEFT"), self.t("DOOR_FRONT_RIGHT"), self.t("DOOR_REAR_LEFT"), self.t("DOOR_REAR_RIGHT")];
 
-            var first = true;
+            var unlockedDoors = "";
             for (let i = 0; i < doors.length; i++) {
                 if (response[doors[i]].value == "UNLOCKED") {
-                    if (first) {
-                        first = false;
-                    } else {
-                        speechOutput += ", ";
+                    if (unlockedDoors) {
+                        unlockedDoors += ", ";
                     }
-                    speechOutput = speechOutput + doornames[i];
+                    unlockedDoors += doornames[i];
                 }
             }
 
-            speechOutput += " are unlocked!";
-            if (speechOutput == "The  are unlocked!") {
-                speechOutput = "All doors are locked!";
+            if (unlockedDoors) {
+                speechOutput = self.t("FEEDBACK_DOORS_GENERAL", unlockedDoors);
+            } else {
+                speechOutput = self.t("FEEDBACK_DOORS_ALL_LOCKED");
             }
 
         } else {
             console.log(error);
-            speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
+            speechOutput = getErrorMessage(self, error, self.t("ERROR"));
         }
-        self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
+        self.emit(":ask", speechOutput, self.t("WHAT_DO_YOU_WANT"));
     });
 
     console.info("Ending getDoorsHandler()");
@@ -94,17 +91,17 @@ const getLocationHandler = function () {
 
             GoogleMapsClient.getAddress(response.latitude.value, response.longitude.value, function (city) {
                 if (city) {
-                    speechOutput = "The car's position is: " + city;
+                    speechOutput = self.t("FEEDBACK_POSITION", city);
                 } else {
-                    speechOutput = "The car's position is: Longitude=" + response.latitude.value + ", Latitude=" + response.longitude.value, +"!";
+                    speechOutput = self.t("FEEDBACK_COORDINATES", response.latitude.value, response.longitude.value);
                 }
-                self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
+                self.emit(":ask", speechOutput, self.t("WHAT_DO_YOU_WANT"));
             });
 
         } else {
             console.log(error);
-            speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
-            self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
+            speechOutput = getErrorMessage(self, error, self.t("ERROR"));
+            self.emit(":ask", speechOutput, self.t("WHAT_DO_YOU_WANT"));
         }
 
     });
@@ -132,12 +129,12 @@ const getFuelLevelHandler = function () {
     client.getFuel(function (error, response) {
         var speechOutput = "";
         if (!error && response.fuellevelpercent.value != null) {
-            speechOutput = "There are " + response.fuellevelpercent.value + " liters of fuel in your Mercedes!";
+            speechOutput = self.t("FEEDBACK_FUEL_LEVEL", response.fuellevelpercent.value);
         } else {
             console.log(error);
-            speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
+            speechOutput = getErrorMessage(self, error, self.t("ERROR"));
         }
-        self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
+        self.emit(":ask", speechOutput, self.t("WHAT_DO_YOU_WANT"));
     });
 
     console.info("Ending getFuelLevelHandler()");
@@ -156,62 +153,51 @@ const checkEnoughFuelHandler = function () {
         if (!error && response != null) {
 
             GoogleMapsClient.getDistance(response.latitude.value, response.longitude.value, city, function (err, distance, duration, origin, destination) {
-
                 if (distance && duration && origin && destination) {
 
-
-
                     client.getStateOfCharge(function (error, response) {
-
-
-
                         if (!error && response.stateofcharge.value != null) {
 
                             const chargeLevel = response.stateofcharge.value;
-
                             const distanceComma = distance.substring(0, distance.indexOf(" "));
                             const distanceString = distanceComma.replace(",", "");
                             const distanceInt = parseInt(distanceString);
-
                             const maxRange = 417;
                             const remainingRange = Math.floor(maxRange * chargeLevel / 100);
                             const chargeTimes = Math.ceil((distanceInt - remainingRange) / maxRange);
 
-
-
-                            speechOutput = "The distance between your current location and " + city + " is " + distance + "! Your Mercedes has a state of charge of " + chargeLevel + "%, with an estimated range of " + remainingRange + "km!";
+                            speechOutput = self.t("FEEDBACK_DISTANCE", city, distance) + self.t("FEEDBACK_CHARGE", chargeLevel, remainingRange);
 
                             if (remainingRange >= distanceInt) {
-                                speechOutput += " Awesome, with your current charge level, you can make the whole route! Have a fun trip!";
+                                speechOutput += self.t("FEEDBACK_CHARGE_ENOUGH");
                             } else if (maxRange >= distanceInt) {
-                                speechOutput += " That's not enough! You should charge your car! Than you can make the whole trip with one charge!";
+                                speechOutput += self.t("FEEDBACK_CHARGE_NEED_CHARGE");
                             } else if (chargeTimes >= 10) {
-                                speechOutput += " Well... maybe you should thing about taking a plane!";
+                                speechOutput += self.t("FEEDBACK_CHARGE_TOO_FAR");
                             } else if (chargeTimes == 1) {
-                                speechOutput += " You'll only have to charge your car one time during the trip!";
+                                speechOutput += self.t("FEEDBACK_CHARGE_ONE_CHARGE");
                             } else {
-                                speechOutput += " You will have to charge your car " + chargeTimes + " times!";
+                                speechOutput += self.t("FEEDBACK_CHARGE_CHARGETIMES", chargeTimes);
                             }
 
                         } else {
                             console.log(error);
-                            speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
+                            speechOutput = getErrorMessage(self, error, self.t("ERROR"));
                         }
-                        self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
+                        self.emit(":ask", speechOutput, self.t("WHAT_DO_YOU_WANT"));
                     });
 
                 } else {
                     console.log(err);
-                    console.log("ERROR COULDNT FINT!")
-                    self.emit(":ask", "There was a problem finding the distance to " + city + "!", Messages.WHAT_DO_YOU_WANT);
+                    self.emit(":ask", self.t("ERROR_DISTANCE", city), self.t("WHAT_DO_YOU_WANT"));
                 }
 
             });
 
         } else {
             console.log(error);
-            speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
-            self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
+            speechOutput = getErrorMessage(self, error, self.t("ERROR"));
+            self.emit(":ask", speechOutput, self.t("WHAT_DO_YOU_WANT"));
         }
 
     });
@@ -227,12 +213,12 @@ const getLicensePlateHandler = function () {
     client.getCars(function (error, response) {
         var speechOutput = "";
         if (!error && response != null) {
-            speechOutput = "Your Mercedes-Benz License Plate is " + response[0].licenseplate;
+            speechOutput = self.t("FEEDBACK_LICENSE_PLATE", response[0].licenseplate);
         } else {
-            speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
+            speechOutput = getErrorMessage(self, error, self.t("ERROR"));
         }
 
-        self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
+        self.emit(":ask", speechOutput, self.t("WHAT_DO_YOU_WANT"));
     });
 
     console.info("Ending getLicensePlateHandler()");
@@ -255,18 +241,15 @@ const getMilesHandler = function () {
             const total = response.odometer.value;
             const sinceReset = response.distancesincereset.value;
             const current = response.distancesincestart.value;
-
-            speechOutput = "There are " + total + " km on the odometer!" +
-                " Since the last reset, you've driven " + sinceReset + " km" +
-                " and since start " + current + "!";
-            const cardTitle = "Your Car's Odometer Values:"
-            const cardContent = `\n\nTotal: ${total}km\n\nSince last reset: ${sinceReset}km\n\nSince start: ${current}km`;
-            self.emit(':askWithCard', speechOutput, Messages.WHAT_DO_YOU_WANT, cardTitle, cardContent, imageObj);
+            speechOutput = self.t("FEEDBACK_ODOMETER", total, sinceReset, current);
+            const cardTitle = self.t("FEEDBACK_ODOMETER_CARD_TITLE");
+            const cardContent = self.t("FEEDBACK_ODOMETER_CARD_CONTENT", total, sinceReset, current);
+            self.emit(':askWithCard', speechOutput, self.t("WHAT_DO_YOU_WANT"), cardTitle, cardContent, imageObj);
 
         } else {
             console.log(error);
-            speechOutput = getErrorMessage(error, "Unfortunately, I could not connect to your car!");
-            self.emit(":ask", speechOutput, Messages.WHAT_DO_YOU_WANT);
+            speechOutput = getErrorMessage(self, error, self.t("ERROR"));
+            self.emit(":ask", speechOutput, self.t("WHAT_DO_YOU_WANT"));
         }
 
     });
@@ -288,7 +271,7 @@ const newSessionRequestHandler = function () {
             self.attributes['carID'] = response[0].id;
             self.attributes['licenseplate'] = response[0].licenseplate;
         } else {
-            self.emit(":tell", "I could not connect to your car! Please try again!");
+            self.emit(":tell", self.t("COULD_NOT_CONNECT_TRY_AGAIN"));
         }
 
         if (self.event.request.type === Events.LAUNCH_REQUEST) {
@@ -304,37 +287,37 @@ const newSessionRequestHandler = function () {
 
 const launchRequestHandler = function () {
     console.info("Starting launchRequestHandler()");
-    this.emit(":ask", Messages.WELCOME + Messages.WHAT_DO_YOU_WANT, Messages.WHAT_DO_YOU_WANT);
+    this.emit(":ask", this.t("WELCOME") + this.t("WHAT_DO_YOU_WANT"), this.t("WHAT_DO_YOU_WANT"));
     console.info("Ending launchRequestHandler()");
 };
 
 const sessionEndedRequestHandler = function () {
     console.info("Starting sessionEndedRequestHandler()");
-    this.emit(":tell", Messages.GOODBYE);
+    this.emit(":tell", this.t("GOODBYE"));
     console.info("Ending sessionEndedRequestHandler()");
 };
 
 const unhandledRequestHandler = function () {
     console.info("Starting unhandledRequestHandler()");
-    this.emit(":ask", Messages.UNHANDLED, Messages.UNHANDLED);
+    this.emit(":ask", this.t("UNHANDLED"), this.t("UNHANDLED"));
     console.info("Ending unhandledRequestHandler()");
 };
 
 const amazonHelpHandler = function () {
     console.info("Starting amazonHelpHandler()");
-    this.emit(":ask", Messages.HELP, Messages.HELP);
+    this.emit(":ask", this.t("HELP"), this.t("HELP"));
     console.info("Ending amazonHelpHandler()");
 };
 
 const amazonCancelHandler = function () {
     console.info("Starting amazonCancelHandler()");
-    this.emit(":tell", Messages.GOODBYE);
+    this.emit(":tell", this.t("GOODBYE"));
     console.info("Ending amazonCancelHandler()");
 };
 
 const amazonStopHandler = function () {
     console.info("Starting amazonStopHandler()");
-    this.emit(":ask", Messages.STOP, Messages.STOP);
+    this.emit(":ask", this.t("STOP"), this.t("STOP"));
     console.info("Ending amazonStopHandler()");
 };
 

@@ -45,11 +45,13 @@
                     "samples": [
             "what is my car's mileage",
             "what is my Mercedes's mileage",
-            "how many mile have I been driven so far",
+            "how many miles have I been driven so far",
+            "how many kilometers have I been driven so far",
             "what is the value of the odometer",
             "what is the odometer value",
             "how many miles does my car have",
-            "how many miles do I have",
+            "how many kilometers does my car have",
+            "how many kilometers do I have",
             "how many miles do I have",
             "what does the odometer say",
             "can you give me the odometer value"
@@ -116,10 +118,20 @@
           ],
                     "samples": [
             "to I need to go to the gas station to drive to {destination}",
+            "to I need to charge my car to drive to {destination}",
+            "to I have enough battery to drive to {destination}",
+            "how often do I have to charge my car to drive to {destination}",
+            "how often do I have to charge my Mercedes to drive to {destination}",
+            "how often do I have to charge to drive to {destination}",
+            "how many times do I have to charge my car to drive to {destination}",
+            "how many times do I have to charge my Mercedes to drive to {destination}",
+            "how many times do I have to charge to drive to {destination}",
             "do I need to get fuel to drive to {destination}",
             "do I need to get gas to drie to {destination}",
             "do I have enough gas to drive to {destination}",
             "can I drive to {destination}",
+            "can I drive to {destination} with one battery load",
+            "can I drive to {destination} with one charge",
             "do i have anough fuel to drive to {destination}"
           ]
         }

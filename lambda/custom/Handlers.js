@@ -30,7 +30,7 @@ function getErrorMessage(error, standardText) {
 
 function handleLock(locking, self) {
 
-    const client = new MercedesClient.MercedesClient(self.event.session.user.accessToken);
+    const client = new MercedesClient.MercedesClient(self.event.session.user.accessToken, self.attributes['carID']);
     client.postDoors(locking, function (error, response) {
         var speechOutput = "";
         if (!error && response.status == "INITIATED") {
@@ -47,7 +47,7 @@ const getDoorsHandler = function () {
     console.info("Starting getDoorsHandler()");
     //this.emit(":tell", this.t('SAY_HELLO_MESSAGE', "Pascal"));
 
-    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
+    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
     const self = this;
     client.getDoors(function (error, response) {
         var speechOutput = "The ";
@@ -86,7 +86,7 @@ const getDoorsHandler = function () {
 const getLocationHandler = function () {
     console.info("Starting getLocationHandler()");
 
-    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
+    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
     const self = this;
     client.getLocation(function (error, response) {
         var speechOutput = "";
@@ -127,7 +127,7 @@ const unlockDoorsHandler = function () {
 const getFuelLevelHandler = function () {
     console.info("Starting getFuelLevelHandler()");
 
-    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
+    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
     const self = this;
     client.getFuel(function (error, response) {
         var speechOutput = "";
@@ -146,7 +146,7 @@ const getFuelLevelHandler = function () {
 const checkEnoughFuelHandler = function () {
     console.info("Starting checkEnoughFuelHandler()");
 
-    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
+    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
     const destinationSlot = this.event.request.intent.slots.destination;
     const city = destinationSlot.value;
     var self = this;
@@ -222,7 +222,7 @@ const checkEnoughFuelHandler = function () {
 const getLicensePlateHandler = function () {
     console.info("Starting getLicensePlateHandler()");
 
-    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
+    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
     const self = this;
     client.getCars(function (error, response) {
         var speechOutput = "";
@@ -241,7 +241,7 @@ const getLicensePlateHandler = function () {
 const getMilesHandler = function () {
     console.info("Starting getMilesHandler()");
 
-    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
+    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
     const self = this;
     client.getMiles(function (error, response) {
         var speechOutput = "";
@@ -282,11 +282,13 @@ const newSessionRequestHandler = function () {
     console.info("Starting newSessionRequestHandler()");
 
     const self = this;
-    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken);
+    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
     client.getCars(function (error, response) {
         if (!error && response != null) {
             self.attributes['carID'] = response[0].id;
             self.attributes['licenseplate'] = response[0].licenseplate;
+        } else {
+            self.emit(":tell", "I could not connect to your car! Please try again!");
         }
 
         if (self.event.request.type === Events.LAUNCH_REQUEST) {

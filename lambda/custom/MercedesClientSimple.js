@@ -5,12 +5,12 @@ const _ = require("./Helpers");
 
 class MercedesClient {
 
-    constructor(token) {
+    constructor(token, vehicleID) {
         console.log("TOKEN=" + token);
         this.consentToken = token;
         this.endpoint = "api.mercedes-benz.com";
         this.port = 443;
-        this.vehicleID = "FA09055DE6731E05C7";
+        this.vehicleID = vehicleID;
     }
 
     getCars(callback) {
@@ -55,6 +55,14 @@ class MercedesClient {
     }
 
     __postCallWithVehicleID(path, jsonObject, callback) {
+
+        if (this.vehicleID) {
+            console.log("using vehicle ID from cache!");
+            const replacedPath = path.format(this.vehicleID);
+            this.__postCall(replacedPath, jsonObject, callback);
+            return;
+        }
+
         var self = this;
         this.getCars(function (error, result) {
             if (result == null || result.length == 0 || result[0] == null) {

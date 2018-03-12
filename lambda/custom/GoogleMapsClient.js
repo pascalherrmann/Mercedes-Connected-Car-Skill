@@ -27,6 +27,7 @@ exports.getCity = function (lat, long, callback) {
     });
 }
 
+
 exports.getAddress = function (lat, long, callback) {
 
     googleMapsClient.reverseGeocode({

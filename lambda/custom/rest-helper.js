@@ -4,7 +4,6 @@ var http = require("http");
 var https = require("https");
 
 exports.getJSON = function (options, onResult) {
-    //console.log("rest::getJSON");
 
     var port = options.port == 443 ? https : http;
     var req = port.request(options, function (res) {
@@ -41,7 +40,6 @@ exports.getJSON = function (options, onResult) {
 };
 
 exports.postJSON = function (options, jsonObject, onResult) {
-    //console.log("rest::postJSON");
 
     var port = options.port == 443 ? https : http;
     var req = port.request(options, function (res) {
@@ -55,7 +53,7 @@ exports.postJSON = function (options, jsonObject, onResult) {
         });
 
         res.on('end', function () {
-            //console.log(output)
+            console.log(output)
             var obj = JSON.parse(output);
             onResult(res.statusCode, obj);
         });

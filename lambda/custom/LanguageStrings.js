@@ -28,7 +28,7 @@ const languageStrings = {
             'STOP': 'There is nothing to stop. Did you mean to ask something else? ',
             'HELP_MESSAGE': 'This skill lets you interact with your Mercedes-Benz. For example, try to ask for the fuel level! ',
             'HELP_REPROMPT': 'What can I help you with? ',
-            'HELP': 'You can use this skill by asking something like: whats my address? ',
+            'HELP': 'You can use this skill by asking something like: what is the fuel level?',
             'UNHANDLED': "This skill doesn't support that. Please ask something else. ",
             'ERROR': 'Uh Oh. Looks like something went wrong. ',
             'ERROR_403': 'There was a permission problem. Please try to re-link your Mercedes account!',

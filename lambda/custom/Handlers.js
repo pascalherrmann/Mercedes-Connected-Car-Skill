@@ -162,7 +162,7 @@ const checkEnoughFuelHandler = function () {
                             const distanceComma = distance.substring(0, distance.indexOf(" "));
                             const distanceString = distanceComma.replace(",", "");
                             const distanceInt = parseInt(distanceString);
-                            const maxRange = 417;
+                            const maxRange = 517;
                             const remainingRange = Math.floor(maxRange * chargeLevel / 100);
                             const chargeTimes = Math.ceil((distanceInt - remainingRange) / maxRange);
 

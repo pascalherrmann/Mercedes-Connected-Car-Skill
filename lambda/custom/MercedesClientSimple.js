@@ -14,7 +14,6 @@ class MercedesClient {
     }
 
     getCars(callback) {
-        // TODO: Check in session, if carID is already available
         return this.__getCall("/experimental/connectedvehicle/v1/vehicles", callback);
     }
 

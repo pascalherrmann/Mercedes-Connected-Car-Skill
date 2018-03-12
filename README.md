@@ -2,9 +2,13 @@
 
 ### Getting Started
 
+* Link your Amazon Echo with your Mercedes-Account!
+
+* Start the skill:
+
 > Alexa, start *My Mercedes*!
 
-##### Intents
+### Intents
 > What is my license plate?
 
 > What is the fuel level?
@@ -13,8 +17,8 @@
 
 > Which doors are locked?
 
-> Lock / Unlock my car!
+> Lock / Unlock my Mercedes!
 
-> Where is my car?
+> Where is my Mercedes?
 
-> Can I drive to Los Angeles 
+> Can I drive to Los Angeles with the current state of charge?

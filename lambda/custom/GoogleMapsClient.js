@@ -51,7 +51,6 @@ exports.getDistance = function (lat, long, to, callback) {
         destinations: to
     }, function (err, response) {
         console.log("Google Request completed!");
-        console.log(err);
         if (!err) {
             try {
                 const dist = response.json.rows[0].elements[0].distance.text;

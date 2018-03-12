@@ -34,6 +34,8 @@
             "what is my car's license plate",
             "what's my car's license plate",
             "what is my license plate",
+            "what's my license plate",
+            "what is my license plate",
             "what license plate do I have",
             "tell me my license plate",
             "tell me my car's license plate",
@@ -135,6 +137,7 @@
             "can I drive to {destination}",
             "can I drive to {destination} with one battery load",
             "can I drive to {destination} with one charge",
+            "can I drive to {destination} with the current state of charge",
             "will I make it to {destination}",
             "do i have anough fuel to drive to {destination}"
           ]

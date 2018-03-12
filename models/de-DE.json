@@ -136,6 +136,7 @@
             }
           ],
                     "samples": [
+            "kann ich mit dem aktuellen Ladestand nach {destination} fahren",
             "habe ich genug benzin um nach {destination} zu fahren",
             "habe ich genug sprit um nach {destination} zu fahren",
             "reicht das benzin bis nach {destination}",
@@ -144,6 +145,7 @@
             "reicht der tank bis {destination}",
             "schaffe ich es nach {destination}",
             "hält der Akku bis {destination}",
+            "reicht der Akku bis {destination}",
             "wie viele Ladungen brauche ich bis {destination}",
             "wie viele Akku Ladungen brauche ich bis {destination}",
             "schaffe ich es mit einer Ladung nach {destination}",

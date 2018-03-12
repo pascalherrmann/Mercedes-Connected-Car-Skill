@@ -5,9 +5,9 @@
         "de-DE": {
           "summary": "Mercedes Connected Car Integration für Alexa",
           "examplePhrases": [
-            "Alexa, frage Mein Mercedes wie viel Benzin im Auto ist!",
-            "Alexa, frage Mein Mercedes was mein Nummernschild ist!",
-            "Alexa, sage Mein Mercedes schließe das Auto ab!"
+            "alexa frage mein mercedes wie viel benzin ist im tank",
+            "alexa frage mein mercedes schließe das auto ab",
+            "alexa frage mein mercedes reicht der aktuelle ladestand bis nach los angeles"
           ],
           "keywords": [
             "Connected",
@@ -16,16 +16,16 @@
             "Alexa"
           ],
           "name": "MeinMercedes",
-          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/33be/1ec429a7157a4532a543ea68ceb7339f/APP_ICON?versionId=OqiyRz0GcYa5ZP6SMAojHcsl4198Nd2w&AWSAccessKeyId=AKIAI3X6PUXD7CU5F5BQ&Expires=1520858259&Signature=MgLWAShpivzklXka0z5HgLDVemA%3D",
+          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/33be/1ec429a7157a4532a543ea68ceb7339f/APP_ICON?versionId=OqiyRz0GcYa5ZP6SMAojHcsl4198Nd2w&AWSAccessKeyId=AKIAI3X6PUXD7CU5F5BQ&Expires=1520953761&Signature=WonaFq2WUbCp2hTVrCgs0S7V2N4%3D",
           "description": "Mercedes Connected Car Integration für Alexa",
-          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/e444/a781b518ac344a4790575191be501156/APP_ICON_LARGE?versionId=418VJaJzNBAHFbjORykh.eYxTfoD.WiY&AWSAccessKeyId=AKIAI3X6PUXD7CU5F5BQ&Expires=1520858259&Signature=kbR7Iwe1apZPcXZ3K5Co%2F6xpyh4%3D"
+          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/e444/a781b518ac344a4790575191be501156/APP_ICON_LARGE?versionId=418VJaJzNBAHFbjORykh.eYxTfoD.WiY&AWSAccessKeyId=AKIAI3X6PUXD7CU5F5BQ&Expires=1520953761&Signature=0brRXlELm4Fcmroyt5eA1B151bs%3D"
         },
         "en-US": {
           "summary": "Mercedes Connected Car Integration for Alexa",
           "examplePhrases": [
-            "Alexa ask My Mercedes what the fuel level is!",
-            "Alexa, ask My Mercedes what the mileage is!",
-            "Alexa, ask My Mercedes to lock the car!"
+            "alexa ask my mercedes what is the fuel level",
+            "alexa ask my mercedes to lock the doors!",
+            "alexa ask my mercedes if i'll make it to Los Angeles with the current state of fuel"
           ],
           "keywords": [
             "Mercedes",
@@ -34,9 +34,9 @@
             "Alexa"
           ],
           "name": "MyMercedes",
-          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/1876/9d8d7b9628c142239d8d17bc1c8ca961/APP_ICON?versionId=ThK.sV4gCaeufWrTjl.L72i3yeIbPec1&AWSAccessKeyId=AKIAI3X6PUXD7CU5F5BQ&Expires=1520858259&Signature=hnb2G%2FGzT2jj88vpxoXkUoVwg64%3D",
+          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/1876/9d8d7b9628c142239d8d17bc1c8ca961/APP_ICON?versionId=ThK.sV4gCaeufWrTjl.L72i3yeIbPec1&AWSAccessKeyId=AKIAI3X6PUXD7CU5F5BQ&Expires=1520953761&Signature=L2ZQMnC43DuUONpyS2vzvvUvjXE%3D",
           "description": "This skill lets you interact with your Mercedes!",
-          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/bf46/6d4e835931e54d2ea44a83b4c11fcc32/APP_ICON_LARGE?versionId=u8m8Xi0nOEPOc.e1CkIAOfXyKX823wBk&AWSAccessKeyId=AKIAI3X6PUXD7CU5F5BQ&Expires=1520858259&Signature=Qf9b7EIFjtGlmkWkv983w%2BbVfgI%3D"
+          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/bf46/6d4e835931e54d2ea44a83b4c11fcc32/APP_ICON_LARGE?versionId=u8m8Xi0nOEPOc.e1CkIAOfXyKX823wBk&AWSAccessKeyId=AKIAI3X6PUXD7CU5F5BQ&Expires=1520953761&Signature=TQ8O1TjtfofW6cenTHPJhyqhv%2FE%3D"
         }
       },
       "isAvailableWorldwide": true,

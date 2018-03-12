@@ -44,10 +44,12 @@ exports.getAddress = function (lat, long, callback) {
 }
 
 exports.getDistance = function (lat, long, to, callback) {
+    console.log("Calling Google-getDistance");
     googleMapsClient.distanceMatrix({
         origins: [[lat, long]],
         destinations: to
     }, function (err, response) {
+        console.log("Google Request completed!");
         console.log(err);
         if (!err) {
             try {
@@ -61,7 +63,6 @@ exports.getDistance = function (lat, long, to, callback) {
             }
 
         } else {
-            console.log("error callbck")
             console.log(err);
             callback(err, null, null, null, null);
         }

@@ -159,20 +159,38 @@ const checkEnoughFuelHandler = function () {
 
                 if (distance && duration && origin && destination) {
 
+
+
                     client.getStateOfCharge(function (error, response) {
-                        console.log(response)
+
+
+
                         if (!error && response.stateofcharge.value != null) {
 
                             const chargeLevel = response.stateofcharge.value;
+
+                            const distanceComma = distance.substring(0, distance.indexOf(" "));
+                            const distanceString = distanceComma.replace(",", "");
+                            const distanceInt = parseInt(distanceString);
+
                             const maxRange = 417;
-                            const remainingRange = maxRange * chargeLevel / 100;
+                            const remainingRange = Math.floor(maxRange * chargeLevel / 100);
+                            const chargeTimes = Math.ceil((distanceInt - remainingRange) / maxRange);
+
+
 
                             speechOutput = "The distance between your current location and " + city + " is " + distance + "! Your Mercedes has a state of charge of " + chargeLevel + "%, with an estimated range of " + remainingRange + "km!";
 
-                            if (remainingRange >= maxRange) {
-                                speechOutput += " Have a fun trip!";
+                            if (remainingRange >= distanceInt) {
+                                speechOutput += " Awesome, with your current charge level, you can make the whole route! Have a fun trip!";
+                            } else if (maxRange >= distanceInt) {
+                                speechOutput += " That's not enough! You should charge your car! Than you can make the whole trip with one charge!";
+                            } else if (chargeTimes >= 10) {
+                                speechOutput += " Well... maybe you should thing about taking a plane!";
+                            } else if (chargeTimes == 1) {
+                                speechOutput += " You'll only have to charge your car one time during the trip!";
                             } else {
-                                speechOutput += " That's not enough! You will need to charge your car!";
+                                speechOutput += " You will have to charge your car " + chargeTimes + " times!";
                             }
 
                         } else {

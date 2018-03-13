@@ -3,15 +3,19 @@
 // Internal imports
 const Intents = require('./Intents');
 const Events = require('./Events');
-const Helpers = require('./Helpers');
+const Helpers = require('./Helpers/Helpers');
 
-const GoogleMapsClient = require('./GoogleMapsClient');
-const MercedesClient = require("./MercedesClient");
-const carModel = require("./CarModel");
+const GoogleMapsClient = require('./Clients/GoogleMapsClient');
+const MercedesClient = require("./Clients/MercedesClient");
+const carModel = require("./Model/CarModel");
 
 /*
     All Handlers for Custom Events and Intents
 */
+
+function handleRequest(request) {
+
+}
 
 function reply(self, speechOutput) {
     if (self.attributes['launched']) {
@@ -193,7 +197,7 @@ const getLocationHandler = function () {
     request.then((r) => {
         const location = carModel.location(r.data);
         if (location && r.statusCode == 200) {
-            return GoogleMapsClient.getAddress(location.latitude, location.longitude)
+            return GoogleMapsClient.getAddress(location.latitude, location.longitude);
         } else {
             reply(this, getErrorMessage(this, r.statusCode));
             return;
@@ -204,7 +208,7 @@ const getLocationHandler = function () {
         if (city) {
             reply(this, this.t("FEEDBACK_POSITION", city));
         } else {
-            reply(this, this.t("FEEDBACK_COORDINATES", location.latitude, location.longitude))
+            reply(this, this.t("FEEDBACK_COORDINATES", location.latitude, location.longitude));
         }
     }).catch((e) => {
         reply(this, this.t("ERROR"));
@@ -290,7 +294,7 @@ const newSessionRequestHandler = function () {
         return;
     }
 
-    const client = new MercedesClient(this.event.session.user.accessToken)
+    const client = new MercedesClient(this.event.session.user.accessToken);
     let request = client.getCarInfo();
     request.then((r) => {
         const info = carModel.carInfo(r.data);

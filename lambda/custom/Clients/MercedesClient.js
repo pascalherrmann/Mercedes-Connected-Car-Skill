@@ -1,7 +1,7 @@
 'use strict';
 
-const requestHelper = require('./RequestHelper');
-const helpers = require("./Helpers");
+const requestHelper = require('../Helpers/RequestHelper');
+const helpers = require("../Helpers/Helpers");
 
 class MercedesClient {
 
@@ -15,27 +15,27 @@ class MercedesClient {
     }
 
     getCarInfo() {
-        return this.__getPromise("/experimental/connectedvehicle/v1/vehicles")
+        return this.__getPromise("/experimental/connectedvehicle/v1/vehicles");
     }
 
     getLocation() {
-        return this.__getPromise("/experimental/connectedvehicle/v1/vehicles/{0}/location")
+        return this.__getPromise("/experimental/connectedvehicle/v1/vehicles/{0}/location");
     }
 
     getDoors() {
-        return this.__getPromise("/experimental/connectedvehicle/v1/vehicles/{0}/doors")
+        return this.__getPromise("/experimental/connectedvehicle/v1/vehicles/{0}/doors");
     }
 
     getStateOfCharge() {
-        return this.__getPromise("/experimental/connectedvehicle/v1/vehicles/{0}/stateofcharge")
+        return this.__getPromise("/experimental/connectedvehicle/v1/vehicles/{0}/stateofcharge");
     }
 
     getOdometer() {
-        return this.__getPromise("/experimental/connectedvehicle/v1/vehicles/{0}/odometer")
+        return this.__getPromise("/experimental/connectedvehicle/v1/vehicles/{0}/odometer");
     }
 
     getFuel() {
-        return this.__getPromise("/experimental/connectedvehicle/v1/vehicles/{0}/fuel")
+        return this.__getPromise("/experimental/connectedvehicle/v1/vehicles/{0}/fuel");
     }
 
     postDoors(locking, callback) {

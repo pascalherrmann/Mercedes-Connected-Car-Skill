@@ -5,9 +5,7 @@ var googleMapsClient = require('@google/maps').createClient({
 });
 
 exports.getAddress = function (lat, long) {
-
     return new Promise((fulfill, reject) => {
-
         googleMapsClient.reverseGeocode({
             latlng: [lat, long]
         }, function (err, response) {
@@ -15,16 +13,16 @@ exports.getAddress = function (lat, long) {
                 const address = response.json.results[0];
                 fulfill(address.formatted_address);
                 return;
-
-            } else reject();
-
+            } else {
+                console.log(err);
+                reject();
+            }
         });
     });
 }
 
 exports.getDistance = function (lat, long, to) {
     return new Promise((fulfill, reject) => {
-
         console.log("Calling Google-getDistance");
         googleMapsClient.distanceMatrix({
             origins: [[lat, long]],
@@ -44,6 +42,5 @@ exports.getDistance = function (lat, long, to) {
                 reject();
             }
         });
-
-    })
+    });
 }

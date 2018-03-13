@@ -12,3 +12,9 @@ if (!String.prototype.format) {
     });
   };
 }
+
+exports.replaceLast = function(str, isValue, shouldValue){
+    const pos = str.lastIndexOf(isValue);
+    if (pos > 0) str = str.substring(0,pos) + shouldValue + str.substring(pos+1);
+    return str;
+}

@@ -40,7 +40,9 @@ const languageStrings = {
             'DOOR_FRONT_LEFT': 'Front Left',
             'DOOR_FRONT_RIGHT': 'Front Right',
             'DOOR_REAR_LEFT': 'Rear Left',
-            'DOOR_REAR_RIGHT': 'Rear Right'
+            'DOOR_REAR_RIGHT': 'Rear Right',
+            'AND': 'and',
+            'TOKEN_INVALID': 'Your security token is invalid. Please link this skill to your Mercedes-Account.'
         }
     },
     'de-DE': {
@@ -82,7 +84,9 @@ const languageStrings = {
             'DOOR_FRONT_LEFT': 'Vorne Links',
             'DOOR_FRONT_RIGHT': 'Vorne Rechts',
             'DOOR_REAR_LEFT': 'Hinten Links',
-            'DOOR_REAR_RIGHT': 'Hinten Rechts'
+            'DOOR_REAR_RIGHT': 'Hinten Rechts',
+            'AND': 'und',
+            'TOKEN_INVALID': 'Dein Token ist ungültig. Bitte verlinke diesen Skill mit deinem Mercedes-Account.'
         }
     }
 };

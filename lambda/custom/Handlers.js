@@ -1,17 +1,35 @@
 'use strict';
 
 // Internal imports
-const MercedesClient = require('./MercedesClientSimple');
-const GoogleMapsClient = require('./GoogleMapsClient');
 const Intents = require('./Intents');
 const Events = require('./Events');
+const Helpers = require('./Helpers');
+
+const GoogleMapsClient = require('./GoogleMapsClient');
+const MercedesClient = require("./MercedesClient");
+const carModel = require("./CarModel");
 
 /*
     All Handlers for Custom Events and Intents
 */
 
-function getErrorMessage(self, error, standardText) {
+function reply(self, speechOutput) {
+    if (self.attributes['launched']) {
+        self.emit(":ask", speechOutput, self.t("WHAT_DO_YOU_WANT"));
+    } else {
+        self.emit(":tell", speechOutput);
+    }
+}
 
+function replyWithCard(self, speechOutput, cardTitle, cardContent, imageObj) {
+    if (self.attributes['launched']) {
+        self.emit(':askWithCard', speechOutput, self.t("WHAT_DO_YOU_WANT"), cardTitle, cardContent, imageObj);
+    } else {
+        self.emit(':tellWithCard', speechOutput, self.t("WHAT_DO_YOU_WANT"), cardTitle, cardContent, imageObj);
+    }
+}
+
+function getErrorMessage(self, error, standardText) {
     switch (error) {
         case 403:
             return self.t("ERROR_403");
@@ -22,91 +40,31 @@ function getErrorMessage(self, error, standardText) {
         case 500:
             return self.t("ERROR_500");
         default:
-            return standardText;
+            if (standardText) {
+                return standardText;
+            } else {
+                return self.t("ERROR");
+            }
     }
-
 }
 
 function handleLock(locking, self) {
 
-    const client = new MercedesClient.MercedesClient(self.event.session.user.accessToken, self.attributes['carID']);
-    client.postDoors(locking, function (error, response) {
-        var speechOutput = "";
-        if (!error && response.status == "INITIATED") {
-            speechOutput = locking ? self.t("FEEDBACK_LOCKING") : self.t("FEEDBACK_UNLOCKING");
+    const client = new MercedesClient(self.event.session.user.accessToken, self.attributes['carID']);
+    let request = client.postDoors(locking);
+    request.then((r) => {
+        const success = carModel.doorFeedback(r.data);
+        if (success && r.statusCode == 200) {
+            const speechoutput = locking ? self.t("FEEDBACK_LOCKING") : self.t("FEEDBACK_UNLOCKING");
+            reply(self, speechoutput);
         } else {
-            speechOutput = getErrorMessage(self, error, self.t("ERROR"));
+            reply(self, getErrorMessage(self, r.statusCode));
         }
-        self.emit(":ask", speechOutput, self.t("WHAT_DO_YOU_WANT"));
+    }).catch((e) => {
+        reply(self, self.t("ERROR"));
+        console.log(e);
     });
 
-}
-
-const getDoorsHandler = function () {
-    console.info("Starting getDoorsHandler()");
-
-    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
-    const self = this;
-    client.getDoors(function (error, response) {
-        var speechOutput = "";
-        if (!error && response) {
-
-            const doors = ["doorlockstatusfrontleft", "doorlockstatusfrontright", "doorlockstatusrearright", "doorlockstatusrearleft"];
-            const doornames = [self.t("DOOR_FRONT_LEFT"), self.t("DOOR_FRONT_RIGHT"), self.t("DOOR_REAR_LEFT"), self.t("DOOR_REAR_RIGHT")];
-
-            var unlockedDoors = "";
-            for (let i = 0; i < doors.length; i++) {
-                if (response[doors[i]].value == "UNLOCKED") {
-                    if (unlockedDoors) {
-                        unlockedDoors += ", ";
-                    }
-                    unlockedDoors += doornames[i];
-                }
-            }
-
-            if (unlockedDoors) {
-                speechOutput = self.t("FEEDBACK_DOORS_GENERAL", unlockedDoors);
-            } else {
-                speechOutput = self.t("FEEDBACK_DOORS_ALL_LOCKED");
-            }
-
-        } else {
-            console.log(error);
-            speechOutput = getErrorMessage(self, error, self.t("ERROR"));
-        }
-        self.emit(":ask", speechOutput, self.t("WHAT_DO_YOU_WANT"));
-    });
-
-    console.info("Ending getDoorsHandler()");
-}
-
-const getLocationHandler = function () {
-    console.info("Starting getLocationHandler()");
-
-    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
-    const self = this;
-    client.getLocation(function (error, response) {
-        var speechOutput = "";
-        if (!error && response != null) {
-
-            GoogleMapsClient.getAddress(response.latitude.value, response.longitude.value, function (city) {
-                if (city) {
-                    speechOutput = self.t("FEEDBACK_POSITION", city);
-                } else {
-                    speechOutput = self.t("FEEDBACK_COORDINATES", response.latitude.value, response.longitude.value);
-                }
-                self.emit(":ask", speechOutput, self.t("WHAT_DO_YOU_WANT"));
-            });
-
-        } else {
-            console.log(error);
-            speechOutput = getErrorMessage(self, error, self.t("ERROR"));
-            self.emit(":ask", speechOutput, self.t("WHAT_DO_YOU_WANT"));
-        }
-
-    });
-
-    console.info("Ending getLocationHandler()");
 }
 
 const lockDoorsHandler = function () {
@@ -124,101 +82,38 @@ const unlockDoorsHandler = function () {
 const getFuelLevelHandler = function () {
     console.info("Starting getFuelLevelHandler()");
 
-    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
-    const self = this;
-    client.getFuel(function (error, response) {
-        var speechOutput = "";
-        if (!error && response.fuellevelpercent.value != null) {
-            speechOutput = self.t("FEEDBACK_FUEL_LEVEL", response.fuellevelpercent.value);
+    const client = new MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
+    let request = client.getFuel();
+    request.then((r) => {
+        const fuel = carModel.fuel(r.data);
+        if (fuel && r.statusCode == 200) {
+            reply(this, this.t("FEEDBACK_FUEL_LEVEL", fuel));
         } else {
-            console.log(error);
-            speechOutput = getErrorMessage(self, error, self.t("ERROR"));
+            reply(this, getErrorMessage(this, r.statusCode));
         }
-        self.emit(":ask", speechOutput, self.t("WHAT_DO_YOU_WANT"));
+    }).catch((e) => {
+        reply(this, this.t("ERROR"));
+        console.log(e);
     });
 
     console.info("Ending getFuelLevelHandler()");
 }
 
-const checkEnoughFuelHandler = function () {
-    console.info("Starting checkEnoughFuelHandler()");
-
-    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
-    const destinationSlot = this.event.request.intent.slots.destination;
-    const city = destinationSlot.value;
-    var self = this;
-
-    client.getLocation(function (error, response) {
-        var speechOutput = "";
-        if (!error && response != null) {
-
-            GoogleMapsClient.getDistance(response.latitude.value, response.longitude.value, city, function (err, distance, duration, origin, destination) {
-                if (distance && duration && origin && destination) {
-
-                    client.getStateOfCharge(function (error, response) {
-                        if (!error && response.stateofcharge.value != null) {
-
-                            const chargeLevel = response.stateofcharge.value;
-                            const distanceComma = distance.substring(0, distance.indexOf(" "));
-                            const distanceString = distanceComma.replace(",", "");
-                            const distanceInt = parseInt(distanceString);
-                            const maxRange = 517;
-                            const remainingRange = Math.floor(maxRange * chargeLevel / 100);
-                            const chargeTimes = Math.ceil((distanceInt - remainingRange) / maxRange);
-
-                            speechOutput = self.t("FEEDBACK_DISTANCE", city, distance) + self.t("FEEDBACK_CHARGE", chargeLevel, remainingRange);
-
-                            if (remainingRange >= distanceInt) {
-                                speechOutput += self.t("FEEDBACK_CHARGE_ENOUGH");
-                            } else if (maxRange >= distanceInt) {
-                                speechOutput += self.t("FEEDBACK_CHARGE_NEED_CHARGE");
-                            } else if (chargeTimes >= 10) {
-                                speechOutput += self.t("FEEDBACK_CHARGE_TOO_FAR");
-                            } else if (chargeTimes == 1) {
-                                speechOutput += self.t("FEEDBACK_CHARGE_ONE_CHARGE");
-                            } else {
-                                speechOutput += self.t("FEEDBACK_CHARGE_CHARGETIMES", chargeTimes);
-                            }
-
-                        } else {
-                            console.log(error);
-                            speechOutput = getErrorMessage(self, error, self.t("ERROR"));
-                        }
-                        self.emit(":ask", speechOutput, self.t("WHAT_DO_YOU_WANT"));
-                    });
-
-                } else {
-                    console.log(err);
-                    self.emit(":ask", self.t("ERROR_DISTANCE", city), self.t("WHAT_DO_YOU_WANT"));
-                }
-
-            });
-
-        } else {
-            console.log(error);
-            speechOutput = getErrorMessage(self, error, self.t("ERROR"));
-            self.emit(":ask", speechOutput, self.t("WHAT_DO_YOU_WANT"));
-        }
-
-    });
-
-    console.info("Ending checkEnoughFuelHandler()");
-}
-
 const getLicensePlateHandler = function () {
     console.info("Starting getLicensePlateHandler()");
 
-    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
-    const self = this;
-    client.getCars(function (error, response) {
-        var speechOutput = "";
-        if (!error && response != null) {
-            speechOutput = self.t("FEEDBACK_LICENSE_PLATE", response[0].licenseplate);
+    const client = new MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
+    let request = client.getCarInfo();
+    request.then((r) => {
+        const carInfo = carModel.carInfo(r.data);
+        if (carInfo && r.statusCode == 200) {
+            reply(this, this.t("FEEDBACK_LICENSE_PLATE", carInfo.licenseplate));
         } else {
-            speechOutput = getErrorMessage(self, error, self.t("ERROR"));
+            reply(this, getErrorMessage(this, r.statusCode));
         }
-
-        self.emit(":ask", speechOutput, self.t("WHAT_DO_YOU_WANT"));
+    }).catch((e) => {
+        reply(this, this.t("ERROR"));
+        console.log(e);
     });
 
     console.info("Ending getLicensePlateHandler()");
@@ -227,34 +122,159 @@ const getLicensePlateHandler = function () {
 const getMilesHandler = function () {
     console.info("Starting getMilesHandler()");
 
-    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
-    const self = this;
-    client.getMiles(function (error, response) {
-        var speechOutput = "";
-        if (!error && response != null) {
-
+    const client = new MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
+    let request = client.getOdometer();
+    request.then((r) => {
+        const odometer = carModel.odometer(r.data);
+        if (odometer && r.statusCode == 200) {
             const imageObj = {
                 smallImageUrl: 'https://s.aolcdn.com/dims-global/dims3/GLOB/legacy_thumbnail/788x525/quality/85/https://s.aolcdn.com/commerce/autodata/images/USC60MBC891A021001.jpg',
                 largeImageUrl: 'https://s.aolcdn.com/commerce/autodata/images/USC60MBC891A021001.jpg'
             };
-
-            const total = response.odometer.value;
-            const sinceReset = response.distancesincereset.value;
-            const current = response.distancesincestart.value;
-            speechOutput = self.t("FEEDBACK_ODOMETER", total, sinceReset, current);
-            const cardTitle = self.t("FEEDBACK_ODOMETER_CARD_TITLE");
-            const cardContent = self.t("FEEDBACK_ODOMETER_CARD_CONTENT", total, sinceReset, current);
-            self.emit(':askWithCard', speechOutput, self.t("WHAT_DO_YOU_WANT"), cardTitle, cardContent, imageObj);
-
+            const speechOutput = this.t("FEEDBACK_ODOMETER", odometer.total, odometer.reset, odometer.start);
+            const cardTitle = this.t("FEEDBACK_ODOMETER_CARD_TITLE");
+            const cardContent = this.t("FEEDBACK_ODOMETER_CARD_CONTENT", odometer.total, odometer.reset, odometer.start);
+            replyWithCard(this, speechOutput, cardTitle, cardContent, imageObj);
         } else {
-            console.log(error);
-            speechOutput = getErrorMessage(self, error, self.t("ERROR"));
-            self.emit(":ask", speechOutput, self.t("WHAT_DO_YOU_WANT"));
+            reply(this, getErrorMessage(this, r.statusCode));
         }
-
+    }).catch((e) => {
+        reply(this, this.t("ERROR"));
+        console.log(e);
     });
 
     console.info("Ending getMilesHandler()");
+}
+
+const getDoorsHandler = function () {
+    console.info("Starting getDoorsHandler()");
+
+    const client = new MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
+    let request = client.getDoors();
+    request.then((r) => {
+        const doors = carModel.doors(r.data);
+        if (doors && r.statusCode == 200) {
+            var unlockedDoors = "";
+
+            for (let i = 0; i < doors.length; i++) {
+                if (doors[i].value == "UNLOCKED") {
+                    if (unlockedDoors) {
+                        unlockedDoors += ", ";
+                    }
+                    unlockedDoors += this.t(doors[i].str);
+                }
+            }
+
+            unlockedDoors = Helpers.replaceLast(unlockedDoors, ",", " " + this.t("AND"));
+
+            if (unlockedDoors) {
+                reply(this, this.t("FEEDBACK_DOORS_GENERAL", unlockedDoors));
+                console.log(this.t("FEEDBACK_DOORS_GENERAL", unlockedDoors));
+            } else {
+                reply(this, this.t("FEEDBACK_DOORS_ALL_LOCKED"));
+            }
+
+        } else {
+            reply(this, getErrorMessage(this, r.statusCode));
+        }
+    }).catch((e) => {
+        reply(this, this.t("ERROR"));
+        console.log(e);
+    });
+
+    console.info("Ending getDoorsHandler()");
+}
+
+const getLocationHandler = function () {
+    console.info("Starting getLocationHandler()");
+
+    const client = new MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
+    let request = client.getLocation();
+    request.then((r) => {
+        const location = carModel.location(r.data);
+        if (location && r.statusCode == 200) {
+            return GoogleMapsClient.getAddress(location.latitude, location.longitude)
+        } else {
+            reply(this, getErrorMessage(this, r.statusCode));
+            return;
+        }
+    }).catch((e) => {
+        reply(this, this.t("ERROR"));
+    }).then((city) => {
+        if (city) {
+            reply(this, this.t("FEEDBACK_POSITION", city));
+        } else {
+            reply(this, this.t("FEEDBACK_COORDINATES", location.latitude, location.longitude))
+        }
+    }).catch((e) => {
+        reply(this, this.t("ERROR"));
+        console.log(e);
+    });
+
+    console.info("Ending getLocationHandler()");
+}
+
+const checkEnoughFuelHandler = function () {
+    console.info("Starting checkEnoughFuelHandler()");
+
+    const client = new MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
+    const destinationSlot = this.event.request.intent.slots.destination;
+    const city = destinationSlot.value;
+
+    var distance = 0;
+    client.getLocation().then((r) => {
+        const location = carModel.location(r.data);
+        if (location && r.statusCode == 200) {
+            return GoogleMapsClient.getDistance(location.latitude, location.longitude, city);
+        } else {
+            reply(this, getErrorMessage(this, r.statusCode));
+            return;
+        }
+    }).catch((e) => {
+        console.log(e);
+        reply(this, this.t("ERROR_DISTANCE", city));
+        return;
+    }).then((dist) => {
+        if (dist) {
+            console.log(dist);
+            distance = dist;
+            return client.getStateOfCharge();
+        } else {
+            reply(this, this.t("FEEDBACK_COORDINATES", location.latitude, location.longitude));
+            return;
+        }
+    }).catch((e) => {
+        console.log(e);
+        reply(this, this.t("ERROR_DISTANCE", city));
+        return;
+    }).then((r) => {
+        const chargeLevel = carModel.stateOfCharge(r.data);
+        const distanceComma = distance.substring(0, distance.indexOf(" "));
+        const distanceString = distanceComma.replace(",", "");
+        const distanceInt = parseInt(distanceString);
+        const maxRange = 517;
+        const remainingRange = Math.floor(maxRange * chargeLevel / 100);
+        const chargeTimes = Math.ceil((distanceInt - remainingRange) / maxRange);
+
+        var speechOutput = this.t("FEEDBACK_DISTANCE", city, distance) + this.t("FEEDBACK_CHARGE", chargeLevel, remainingRange);
+        if (remainingRange >= distanceInt) {
+            speechOutput += this.t("FEEDBACK_CHARGE_ENOUGH");
+        } else if (maxRange >= distanceInt) {
+            speechOutput += this.t("FEEDBACK_CHARGE_NEED_CHARGE");
+        } else if (chargeTimes >= 10) {
+            speechOutput += this.t("FEEDBACK_CHARGE_TOO_FAR");
+        } else if (chargeTimes == 1) {
+            speechOutput += this.t("FEEDBACK_CHARGE_ONE_CHARGE");
+        } else {
+            speechOutput += this.t("FEEDBACK_CHARGE_CHARGETIMES", chargeTimes);
+        }
+        reply(this, speechOutput);
+    }).catch((e) => {
+        reply(this, this.t("ERROR"));
+        console.log(e);
+    });
+
+    console.info("Ending checkEnoughFuelHandler()");
 }
 
 /*
@@ -264,22 +284,30 @@ const getMilesHandler = function () {
 const newSessionRequestHandler = function () {
     console.info("Starting newSessionRequestHandler()");
 
-    const self = this;
-    const client = new MercedesClient.MercedesClient(this.event.session.user.accessToken, this.attributes['carID']);
-    client.getCars(function (error, response) {
-        if (!error && response != null) {
-            self.attributes['carID'] = response[0].id;
-            self.attributes['licenseplate'] = response[0].licenseplate;
+    const token = this.event.session.user.accessToken;
+    if (!token) {
+        this.emit(":tell", this.t("TOKEN_INVALID"));
+        return;
+    }
+
+    const client = new MercedesClient(this.event.session.user.accessToken)
+    let request = client.getCarInfo();
+    request.then((r) => {
+        const info = carModel.carInfo(r.data);
+        if (!info.id || !info.licenseplate || r.statusCode != 200) {
+            this.emit(":tell", getErrorMessage(this, error, this.t("COULD_NOT_CONNECT_TRY_AGAIN")));
         } else {
-            self.emit(":tell", self.t("COULD_NOT_CONNECT_TRY_AGAIN"));
+            this.attributes['carID'] = info.id;
+            this.attributes['licenseplate'] = info.licenseplate;
+            if (this.event.request.type === Events.LAUNCH_REQUEST) {
+                this.emit(Events.LAUNCH_REQUEST);
+            } else if (this.event.request.type === "IntentRequest") {
+                this.emit(this.event.request.intent.name);
+            }
         }
-
-        if (self.event.request.type === Events.LAUNCH_REQUEST) {
-            self.emit(Events.LAUNCH_REQUEST);
-        } else if (self.event.request.type === "IntentRequest") {
-            self.emit(self.event.request.intent.name);
-        }
-
+    }).catch((e) => {
+        console.log(e);
+        this.emit(":tell", getErrorMessage(this, error, this.t("COULD_NOT_CONNECT_TRY_AGAIN")));
     });
 
     console.info("Ending newSessionRequestHandler()");
@@ -287,6 +315,7 @@ const newSessionRequestHandler = function () {
 
 const launchRequestHandler = function () {
     console.info("Starting launchRequestHandler()");
+    this.attributes['launched'] = true;
     this.emit(":ask", this.t("WELCOME") + this.t("WHAT_DO_YOU_WANT"), this.t("WHAT_DO_YOU_WANT"));
     console.info("Ending launchRequestHandler()");
 };
@@ -317,11 +346,12 @@ const amazonCancelHandler = function () {
 
 const amazonStopHandler = function () {
     console.info("Starting amazonStopHandler()");
-    this.emit(":ask", this.t("STOP"), this.t("STOP"));
+    this.emit(":tell", this.t("GOODBYE"));
     console.info("Ending amazonStopHandler()");
 };
 
 const handlers = {};
+
 // Add event handlers
 handlers[Events.NEW_SESSION] = newSessionRequestHandler;
 handlers[Events.LAUNCH_REQUEST] = launchRequestHandler;
